@@ -11,44 +11,6 @@ export default function HomePage() {
 
   return (
     <div>
-      <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-md">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded-xl bg-primary">
-                <GraduationCap className="size-5 text-primary-foreground" />
-              </div>
-
-              <span className="text-lg font-semibold text-foreground">
-                Tutorly
-              </span>
-            </Link>
-
-            <div className="ml-8 hidden gap-6 md:flex">
-              <Link
-                href="/"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground"
-              >
-                Find a tutor
-              </Link>
-              <Link
-                href="/"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground"
-              >
-                Become a tutor
-              </Link>
-            </div>
-          </div>
-
-          <Link
-            href="/login"
-            className="rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
-          >
-            Log in
-          </Link>
-        </nav>
-      </header>
-
       <main>
         <section className="py-12 lg:py-16">
           <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
