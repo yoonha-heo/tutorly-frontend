@@ -24,7 +24,7 @@ export default function Header() {
               Find a tutor
             </Link>
             <Link
-              href="/"
+              href="/teachers/auth"
               className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               Become a tutor

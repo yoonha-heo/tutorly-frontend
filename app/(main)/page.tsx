@@ -1,4 +1,4 @@
-import { GraduationCap, Star, ArrowRight, Calendar } from "lucide-react";
+import { Star, ArrowRight, Calendar } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -35,7 +35,7 @@ export default function HomePage() {
               </p>
 
               <Link
-                href="/"
+                href="/teachers"
                 className="mb-8 flex w-full items-center justify-center rounded-lg bg-primary-dark px-3 py-2 text-primary-foreground md:w-auto"
               >
                 <span className="mr-2">Get started</span>
