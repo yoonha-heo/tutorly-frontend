@@ -4,19 +4,37 @@ import { GoogleLogin } from "@react-oauth/google";
 import { GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-type AuthRole = "STUDENT" | "TEACHER";
+import { loginWithGoogle } from "../api/authApi";
+import type { UserRole } from "../types/auth.types";
 
 type AuthFormProps = {
   title: string;
   description: string;
-  role: AuthRole;
+  role: UserRole;
 };
 
 export default function AuthForm({ title, description, role }: AuthFormProps) {
   const router = useRouter();
 
   const redirectPath = role === "TEACHER" ? "/teachers/register" : "/teachers";
+
+  async function handleGoogleLoginSuccess(credential?: string) {
+    if (!credential) {
+      console.error("Google idToken not found");
+      return;
+    }
+
+    try {
+      await loginWithGoogle(credential, role);
+      router.replace(redirectPath);
+    } catch (error) {
+      console.error("Google login failed", error);
+    }
+  }
+
+  function handleGoogleLoginError() {
+    console.error("Google login failed");
+  }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6">
@@ -44,56 +62,12 @@ export default function AuthForm({ title, description, role }: AuthFormProps) {
             shape="rectangular"
             text="continue_with"
             width="360"
-            onSuccess={async (credentialResponse) => {
-              const idToken = credentialResponse.credential;
-
-              if (!idToken) {
-                console.error("Google idToken not found");
-                return;
-              }
-
-              const res = await fetch("http://localhost:4000/auth/google", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                  idToken,
-                  role,
-                }),
-              });
-
-              if (!res.ok) {
-                console.error("Login failed");
-                return;
-              }
-
-              router.push(redirectPath);
+            onSuccess={({ credential }) => {
+              handleGoogleLoginSuccess(credential);
             }}
-            onError={() => {
-              console.error("Google Login Failed");
-            }}
+            onError={handleGoogleLoginError}
           />
         </div>
-        {/* 
-        <p className="mt-8 text-center text-sm leading-6 text-muted-foreground">
-          By continuing, you agree to our{" "}
-          <Link
-            href="/terms"
-            className="font-medium text-foreground hover:underline"
-          >
-            Terms
-          </Link>{" "}
-          and{" "}
-          <Link
-            href="/privacy"
-            className="font-medium text-foreground hover:underline"
-          >
-            Privacy Policy
-          </Link>
-          .
-        </p> */}
       </section>
     </main>
   );
