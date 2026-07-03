@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ReactQueryProvider } from "@/providers/react-query-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,11 +16,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <GoogleOAuthProvider
-          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
-        >
-          {children}
-        </GoogleOAuthProvider>
+        <ReactQueryProvider>
+          <GoogleOAuthProvider
+            clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+          >
+            {children}
+          </GoogleOAuthProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
