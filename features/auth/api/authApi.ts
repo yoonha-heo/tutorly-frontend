@@ -33,5 +33,7 @@ export async function getMe(): Promise<Me | null> {
     throw new Error("Failed to fetch me");
   }
 
-  return res.json();
+  const data: { user: Me } = await res.json();
+
+  return data.user;
 }
