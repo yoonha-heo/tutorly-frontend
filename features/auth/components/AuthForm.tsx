@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loginWithGoogle } from "../api/authApi";
 import type { UserRole } from "../types/auth.types";
+import { useQueryClient } from "@tanstack/react-query";
 
 type AuthFormProps = {
   title: string;
@@ -15,17 +16,17 @@ type AuthFormProps = {
 
 export default function AuthForm({ title, description, role }: AuthFormProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const redirectPath = role === "TEACHER" ? "/teachers/register" : "/teachers";
 
   async function handleGoogleLoginSuccess(credential?: string) {
-    if (!credential) {
-      console.error("Google idToken not found");
-      return;
-    }
+    if (!credential) return;
 
     try {
-      await loginWithGoogle(credential, role);
+      const { user } = await loginWithGoogle(credential, role);
+
+      queryClient.setQueryData(["me"], user);
       router.replace(redirectPath);
     } catch (error) {
       console.error("Google login failed", error);
