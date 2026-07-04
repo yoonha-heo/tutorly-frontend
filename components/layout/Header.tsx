@@ -28,12 +28,14 @@ export default function Header() {
             >
               Find a tutor
             </Link>
-            <Link
-              href="/teachers/auth"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground"
-            >
-              Become a tutor
-            </Link>
+            {!isLoading && !me && (
+              <Link
+                href="/teachers/login"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                Become a tutor
+              </Link>
+            )}
           </div>
         </div>
 

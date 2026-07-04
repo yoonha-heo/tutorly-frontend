@@ -1,13 +1,13 @@
 import AuthForm from "@/features/auth/components/AuthForm";
 import { GuestGuard } from "@/features/auth/components/GuestGuard";
 
-export default function LoginPage() {
+export default function TeacherLoginPage() {
   return (
     <GuestGuard>
       <AuthForm
-        title="Welcome back"
-        description="Sign in with Google to start booking lessons."
-        role="STUDENT"
+        title="Become a tutor"
+        description="Sign in with Google to create your tutor account."
+        role="TEACHER"
       />
     </GuestGuard>
   );

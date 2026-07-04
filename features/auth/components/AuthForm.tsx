@@ -4,9 +4,11 @@ import { GoogleLogin } from "@react-oauth/google";
 import { GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { loginWithGoogle } from "../api/authApi";
 import type { UserRole } from "../types/auth.types";
-import { useQueryClient } from "@tanstack/react-query";
+import { getLoginRedirectPath } from "../utils/getLoginRedirectPath";
 
 type AuthFormProps = {
   title: string;
@@ -18,8 +20,6 @@ export default function AuthForm({ title, description, role }: AuthFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const redirectPath = role === "TEACHER" ? "/teachers/register" : "/teachers";
-
   async function handleGoogleLoginSuccess(credential?: string) {
     if (!credential) return;
 
@@ -27,7 +27,7 @@ export default function AuthForm({ title, description, role }: AuthFormProps) {
       const { user } = await loginWithGoogle(credential, role);
 
       queryClient.setQueryData(["me"], user);
-      router.replace(redirectPath);
+      router.replace(getLoginRedirectPath(user));
     } catch (error) {
       console.error("Google login failed", error);
     }

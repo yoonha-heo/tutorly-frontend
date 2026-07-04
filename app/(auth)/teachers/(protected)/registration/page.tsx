@@ -3,8 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useSubmitTeacherProfile } from "@/features/teachers/hooks/useSubmitTeacherProfile";
 import {
@@ -14,10 +15,26 @@ import {
 } from "@/features/teachers/schemas/teacher-register.schema";
 import { useTeacherOptions } from "@/features/teachers/hooks/useTeacherOptions";
 import { uploadImage } from "@/features/uploads/api/uploads.api";
+import { useMe } from "@/features/auth/hooks/useMe";
 
-export default function TeacherRegisterPage() {
+export default function TeacherRegistrationPage() {
   const router = useRouter();
   const mutation = useSubmitTeacherProfile();
+  const queryClient = useQueryClient();
+  const { data: me, isLoading } = useMe();
+
+  // teacher profile guard
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (me?.teacherProfile) {
+      router.replace("/teachers/dashboard");
+    }
+  }, [isLoading, me, router]);
+
+  if (isLoading) return null;
+
+  if (me?.teacherProfile) return null;
 
   const {
     register,
@@ -41,7 +58,7 @@ export default function TeacherRegisterPage() {
   const selectedSpecialties = watch("specialties");
   const profileImage = watch("profileImage");
 
-  const { data: options, isLoading, isError } = useTeacherOptions();
+  const { data: options } = useTeacherOptions();
 
   const languages = options?.languages ?? [];
   const specialties = options?.specialties ?? [];
@@ -82,7 +99,11 @@ export default function TeacherRegisterPage() {
         profileImageUrl,
       });
 
-      router.push("/");
+      await queryClient.invalidateQueries({
+        queryKey: ["me"],
+      });
+
+      router.replace("/teachers/dashboard");
     } catch (error) {
       console.error(error);
     }
