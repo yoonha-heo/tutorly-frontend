@@ -2,12 +2,30 @@
 
 import { useTeacherOptions } from "@/features/teachers/hooks/useTeacherOptions";
 import { useTeachers } from "@/features/teachers/hooks/useTeachers";
+import { useDebounce } from "@/hooks/useDebounce";
 import { Search, Star, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function TeachersPage() {
-  const { data: teachers = [], isLoading, isError } = useTeachers();
+  const [language, setLanguage] = useState("");
+  const [specialty, setSpecialty] = useState("");
+  const [keyword, setKeyword] = useState("");
+
+  const debounceKeyword = useDebounce(keyword, 300);
+
+  const {
+    data: teachers = [],
+    isLoading,
+    isError,
+  } = useTeachers({
+    keyword: debounceKeyword,
+    language,
+    specialty,
+  });
+
   const { data: options } = useTeacherOptions();
+
   const languages = options?.languages ?? [];
   const specialties = options?.specialties ?? [];
 
@@ -20,14 +38,22 @@ export default function TeachersPage() {
 
             <input
               type="search"
-              placeholder="Search by name, language, or specialty"
+              value={keyword}
+              onChange={(event) => setKeyword(event.target.value)}
+              placeholder="Search by name or keyword"
               className="flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
           </div>
 
           <div className="relative">
-            <select className="h-14 w-full appearance-none rounded-2xl border border-border bg-background px-5 pr-12 text-base font-medium text-foreground outline-none transition-colors focus:border-primary">
-              <option>All languages</option>
+            <select
+              value={language}
+              onChange={(event) => setLanguage(event.target.value)}
+              className="h-14 w-full appearance-none rounded-2xl border border-border bg-background px-5 pr-12 text-base font-medium text-foreground outline-none transition-colors focus:border-primary"
+            >
+              <option value="" disabled>
+                Language
+              </option>
 
               {languages.map((language) => (
                 <option key={language.id} value={language.code}>
@@ -40,8 +66,14 @@ export default function TeachersPage() {
           </div>
 
           <div className="relative">
-            <select className="h-14 w-full appearance-none rounded-2xl border border-border bg-background px-5 pr-12 text-base font-medium text-foreground outline-none transition-colors focus:border-primary">
-              <option>All Specialties</option>
+            <select
+              value={specialty}
+              onChange={(event) => setSpecialty(event.target.value)}
+              className="h-14 w-full appearance-none rounded-2xl border border-border bg-background px-5 pr-12 text-base font-medium text-foreground outline-none transition-colors focus:border-primary"
+            >
+              <option value="" disabled>
+                Specialty
+              </option>
 
               {specialties.map((specialty) => (
                 <option key={specialty.id} value={specialty.code}>

@@ -13,6 +13,12 @@ export type Specialties = {
   name: string;
 };
 
+export type GetTeachersParams = {
+  language?: string;
+  specialty?: string;
+  keyword?: string;
+};
+
 export async function submitTeacherProfile(data: TeacherRegisterValues) {
   const res = await fetch(`${env.apiUrl}/teachers/profile`, {
     method: "POST",
@@ -54,10 +60,29 @@ export async function getAvailableSpecialties(): Promise<Specialties[]> {
   return response.json();
 }
 
-export async function getTeachers() {
-  const response = await fetch(`${env.apiUrl}/teachers`, {
-    credentials: "include",
-  });
+export async function getTeachers(params: GetTeachersParams = {}) {
+  const searchParams = new URLSearchParams();
+
+  if (params.language) {
+    searchParams.set("language", params.language);
+  }
+
+  if (params.specialty) {
+    searchParams.set("specialty", params.specialty);
+  }
+
+  if (params.keyword) {
+    searchParams.set("keyword", params.keyword);
+  }
+
+  const queryString = searchParams.toString();
+
+  const response = await fetch(
+    `${env.apiUrl}/teachers?${queryString ? `${queryString}` : ""}`,
+    {
+      credentials: "include",
+    },
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch teachers");
