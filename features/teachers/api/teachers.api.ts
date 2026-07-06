@@ -17,6 +17,8 @@ export type GetTeachersParams = {
   language?: string;
   specialty?: string;
   keyword?: string;
+  page?: number;
+  limit?: number;
 };
 
 export async function submitTeacherProfile(data: TeacherRegisterValues) {
@@ -63,17 +65,11 @@ export async function getAvailableSpecialties(): Promise<Specialties[]> {
 export async function getTeachers(params: GetTeachersParams = {}) {
   const searchParams = new URLSearchParams();
 
-  if (params.language) {
-    searchParams.set("language", params.language);
-  }
-
-  if (params.specialty) {
-    searchParams.set("specialty", params.specialty);
-  }
-
-  if (params.keyword) {
-    searchParams.set("keyword", params.keyword);
-  }
+  if (params.keyword) searchParams.set("keyword", params.keyword);
+  if (params.language) searchParams.set("language", params.language);
+  if (params.specialty) searchParams.set("specialty", params.specialty);
+  if (params.page) searchParams.set("page", String(params.page));
+  if (params.limit) searchParams.set("limit", String(params.limit));
 
   const queryString = searchParams.toString();
 

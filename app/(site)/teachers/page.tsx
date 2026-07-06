@@ -1,11 +1,11 @@
 "use client";
 
 import { useTeacherOptions } from "@/features/teachers/hooks/useTeacherOptions";
-import { useTeachers } from "@/features/teachers/hooks/useTeachers";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Search, Star, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useInfiniteTeachers } from "@/features/teachers/hooks/useInfiniteTeachers";
 
 export default function TeachersPage() {
   const [language, setLanguage] = useState("");
@@ -15,19 +15,52 @@ export default function TeachersPage() {
   const debounceKeyword = useDebounce(keyword, 300);
 
   const {
-    data: teachers = [],
+    data,
     isLoading,
     isError,
-  } = useTeachers({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteTeachers({
     keyword: debounceKeyword,
     language,
     specialty,
   });
 
+  const teachers = data?.pages.flatMap((page) => page.items) ?? [];
+  const totalCount = data?.pages[0]?.totalCount ?? 0;
+
   const { data: options } = useTeacherOptions();
 
   const languages = options?.languages ?? [];
   const specialties = options?.specialties ?? [];
+
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0];
+
+        if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        rootMargin: "300px",
+      },
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <main className="grid gap-4 max-w-6xl m-auto px-4 py-8">
@@ -87,7 +120,7 @@ export default function TeachersPage() {
         </form>
 
         <p className="mt-6 text-base text-muted-foreground">
-          6 teachers available
+          {totalCount} teachers available
         </p>
       </section>
 
@@ -100,11 +133,10 @@ export default function TeachersPage() {
             <header className="flex items-start justify-between gap-4">
               <div className="flex gap-4">
                 <img
-                  src={teacher.profileImageUrl}
+                  src={teacher.profileImageUrl ?? "/images/empty-profile.png"}
                   alt={`${teacher.user.name} profile`}
                   className="size-20 rounded-2xl object-cover"
                 />
-
                 <div>
                   <h2 className="font-semibold text-foreground">
                     {teacher.user.name}
@@ -161,6 +193,14 @@ export default function TeachersPage() {
           </article>
         ))}
       </section>
+
+      <div ref={loadMoreRef} className="h-10" />
+
+      {isFetchingNextPage && (
+        <p className="py-6 text-center text-sm text-muted-foreground">
+          Loading more teachers...
+        </p>
+      )}
     </main>
   );
 }
