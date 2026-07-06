@@ -25,7 +25,7 @@ export default async function TeacherDetailPage({
         <div className="space-y-8">
           <section className="flex items-center gap-6 rounded-3xl border border-border bg-background p-6">
             <img
-              src={teacher.profileImageUrl || teacher.user?.profileImage}
+              src={teacher.profileImageUrl ?? "/images/empty-profile.png"}
               alt={`${teacher.user?.name} profile`}
               className="size-28 rounded-3xl object-cover"
             />

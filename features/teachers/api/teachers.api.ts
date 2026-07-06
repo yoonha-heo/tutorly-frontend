@@ -1,5 +1,6 @@
 import type { TeacherRegisterValues } from "../schemas/teacher-register.schema";
 import { env } from "@/config/env";
+import { Teacher } from "../types/teachers";
 
 export type Languages = {
   id: string;
@@ -19,6 +20,15 @@ export type GetTeachersParams = {
   keyword?: string;
   page?: number;
   limit?: number;
+};
+
+export type TeacherListResponse = {
+  items: Teacher[];
+  page: number;
+  limit: number;
+  totalCount: number;
+  hasNextPage: boolean;
+  nextPage: number | null;
 };
 
 export async function submitTeacherProfile(data: TeacherRegisterValues) {
@@ -62,7 +72,9 @@ export async function getAvailableSpecialties(): Promise<Specialties[]> {
   return response.json();
 }
 
-export async function getTeachers(params: GetTeachersParams = {}) {
+export async function getTeachers(
+  params: GetTeachersParams = {},
+): Promise<TeacherListResponse> {
   const searchParams = new URLSearchParams();
 
   if (params.keyword) searchParams.set("keyword", params.keyword);
