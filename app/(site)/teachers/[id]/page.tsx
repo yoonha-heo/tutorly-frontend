@@ -1,62 +1,65 @@
 import { Calendar, Languages, ShieldCheck, Sparkles, Star } from "lucide-react";
+import { getTeacher } from "@/features/teachers/api/teachers.api";
 
 type TeacherDetailPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default async function TeacherDetailPage({
   params,
 }: TeacherDetailPageProps) {
   const { id } = await params;
+  const teacher = await getTeacher(id);
+
+  const languages =
+    teacher.teacherLanguages?.map((item: any) => item.language.name) ?? [];
+
+  const specialties =
+    teacher.teacherSpecialties?.map((item: any) => item.specialty.name) ?? [];
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="space-y-8">
           <section className="flex items-center gap-6 rounded-3xl border border-border bg-background p-6">
-            <div className="relative shrink-0">
-              <img
-                src="/images/avatar-1.png"
-                alt="Sofía profile"
-                className="size-28 rounded-3xl object-cover"
-              />
-              <span className="absolute -bottom-1 -right-2 text-2xl">🇪🇸</span>
-            </div>
+            <img
+              src={teacher.profileImageUrl || teacher.user?.profileImage}
+              alt={`${teacher.user?.name} profile`}
+              className="size-28 rounded-3xl object-cover"
+            />
 
             <div className="min-w-0 flex-1">
               <header className="flex flex-wrap items-center gap-3">
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                  Sofía M.
+                  {teacher.user?.name}
                 </h1>
 
                 <div className="flex items-center gap-1 text-foreground">
                   <Star className="size-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">5.0</span>
-                  <span className="text-muted-foreground">(214)</span>
+                  <span className="font-semibold">New</span>
+                  <span className="text-muted-foreground">(0)</span>
                 </div>
               </header>
 
               <p className="mt-4 text-xl leading-8 text-muted-foreground">
-                Certified Spanish tutor — speak with confidence from day one
+                {teacher.headline}
               </p>
 
               <p className="mt-3 text-base text-muted-foreground">
-                1,820 lessons taught
+                0 lessons taught
               </p>
             </div>
           </section>
 
           <section className="rounded-3xl border border-border bg-background p-6">
-            <h2 className="text-xl font-bold text-foreground">About Sofía</h2>
+            <h2 className="text-xl font-bold text-foreground">
+              About {teacher.user?.name}
+            </h2>
 
             <p className="mt-5 text-lg leading-9 text-muted-foreground">
-              ¡Hola! I'm Sofía, a certified language teacher from Madrid with 6
-              years of experience helping learners of every level. My lessons
-              are relaxed, conversation-first, and tailored to your goals —
-              whether that's travel, work, or simply chatting with friends.
-              We'll build real speaking habits, not just memorize rules.
+              {teacher.bio}
             </p>
           </section>
 
@@ -67,7 +70,7 @@ export default async function TeacherDetailPage({
             </header>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              {["Spanish", "English"].map((language) => (
+              {languages.map((language: string) => (
                 <span
                   key={language}
                   className="rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary"
@@ -85,7 +88,7 @@ export default async function TeacherDetailPage({
             </header>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              {["Conversation", "Business", "Beginners"].map((specialty) => (
+              {specialties.map((specialty: string) => (
                 <span
                   key={specialty}
                   className="rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary"
@@ -103,19 +106,19 @@ export default async function TeacherDetailPage({
               <div>
                 <p className="text-muted-foreground">
                   <span className="text-4xl font-bold text-foreground">
-                    $18
+                    ${teacher.hourlyRate}
                   </span>{" "}
                   / hour
                 </p>
 
                 <p className="mt-3 text-sm text-muted-foreground">
-                  214 reviews · 1,820 lessons
+                  0 reviews · 0 lessons
                 </p>
               </div>
 
-              <div className="flex items-center gap-1 font-semibold text-foreground">
-                <Star className="size-4 fill-foreground text-foreground" />
-                <span>5.0</span>
+              <div className="flex items-center gap-1">
+                <Star className="size-4 fill-yellow-400 font-semibold text-yellow-400" />
+                <span className="text-foreground">New</span>
               </div>
             </div>
 

@@ -1,49 +1,16 @@
+"use client";
+
+import { useTeacherOptions } from "@/features/teachers/hooks/useTeacherOptions";
+import { useTeachers } from "@/features/teachers/hooks/useTeachers";
 import { Search, Star, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
-const teachers = [
-  {
-    id: "sofia",
-    name: "Sofía M.",
-    avatarUrl: "images/avatar-3.png",
-    flag: "🇪🇸",
-    languages: ["Spanish", "English"],
-    headline: "Certified Spanish tutor — speak with confidence from day one",
-    specialties: ["Conversation", "Business", "Beginners"],
-    rating: 5.0,
-    reviews: 3,
-    lessons: 13,
-    hourlyRate: 18,
-  },
-  {
-    id: "jacob",
-    name: "Jacob B.",
-    avatarUrl: "images/avatar-1.png",
-    flag: "🇺🇸",
-    languages: ["English"],
-    headline: "IELST — speak with confidence from day one",
-    specialties: ["Conversation", "Business", "Beginners"],
-    rating: 4.9,
-    reviews: 11,
-    lessons: 40,
-    hourlyRate: 22,
-  },
-  {
-    id: "Daniel",
-    name: "Daniel A.",
-    avatarUrl: "images/avatar-2.png",
-    flag: "🇪🇸",
-    languages: ["Spanish", "English"],
-    headline: "Certified Spanish tutor — speak with confidence from day one",
-    specialties: ["Conversation", "Business", "Beginners"],
-    rating: 5.0,
-    reviews: 3,
-    lessons: 13,
-    hourlyRate: 18,
-  },
-];
-
 export default function TeachersPage() {
+  const { data: teachers = [], isLoading, isError } = useTeachers();
+  const { data: options } = useTeacherOptions();
+  const languages = options?.languages ?? [];
+  const specialties = options?.specialties ?? [];
+
   return (
     <main className="grid gap-4 max-w-6xl m-auto px-4 py-8">
       <section className="rounded-[32px] border border-border bg-background p-6">
@@ -61,9 +28,12 @@ export default function TeachersPage() {
           <div className="relative">
             <select className="h-14 w-full appearance-none rounded-2xl border border-border bg-background px-5 pr-12 text-base font-medium text-foreground outline-none transition-colors focus:border-primary">
               <option>All languages</option>
-              <option>English</option>
-              <option>Spanish</option>
-              <option>Korean</option>
+
+              {languages.map((language) => (
+                <option key={language.id} value={language.code}>
+                  {language.name}
+                </option>
+              ))}
             </select>
 
             <ChevronDown className="pointer-events-none absolute right-5 top-1/2 size-5 -translate-y-1/2 text-foreground" />
@@ -72,9 +42,12 @@ export default function TeachersPage() {
           <div className="relative">
             <select className="h-14 w-full appearance-none rounded-2xl border border-border bg-background px-5 pr-12 text-base font-medium text-foreground outline-none transition-colors focus:border-primary">
               <option>All Specialties</option>
-              <option>Conversation</option>
-              <option>IELTS</option>
-              <option>Business</option>
+
+              {specialties.map((specialty) => (
+                <option key={specialty.id} value={specialty.code}>
+                  {specialty.name}
+                </option>
+              ))}
             </select>
 
             <ChevronDown className="pointer-events-none absolute right-5 top-1/2 size-5 -translate-y-1/2 text-foreground" />
@@ -87,7 +60,7 @@ export default function TeachersPage() {
       </section>
 
       <section className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {teachers.map((teacher) => (
+        {teachers.map((teacher: any) => (
           <article
             key={teacher.id}
             className="flex flex-col rounded-3xl border border-border bg-background p-5"
@@ -95,42 +68,45 @@ export default function TeachersPage() {
             <header className="flex items-start justify-between gap-4">
               <div className="flex gap-4">
                 <img
-                  src={teacher.avatarUrl}
-                  alt={`${teacher.name} profile`}
+                  src={teacher.profileImageUrl}
+                  alt={`${teacher.user.name} profile`}
                   className="size-20 rounded-2xl object-cover"
                 />
 
                 <div>
                   <h2 className="font-semibold text-foreground">
-                    {teacher.name}
+                    {teacher.user.name}
                   </h2>
+
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {teacher.languages.join(", ")}
+                    {teacher.teacherLanguages
+                      .map((item: any) => item.language.name)
+                      .join(", ")}
                   </p>
+
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {teacher.reviews} reviews ·{" "}
-                    {teacher.lessons.toLocaleString()} lessons
+                    0 reviews · 0 lessons
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-1 font-medium text-foreground">
                 <Star className="size-4 fill-yellow-400 text-yellow-400" />
-                <span>{teacher.rating}</span>
+                <span>New</span>
               </div>
             </header>
 
-            <p className="min-h-[42px] line-clamp-2 mt-5 text-sm leading-6 text-muted-foreground">
+            <p className="mt-5 min-h-[42px] line-clamp-2 text-sm leading-6 text-muted-foreground">
               {teacher.headline}
             </p>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              {teacher.specialties.map((specialty) => (
+              {teacher.teacherSpecialties.map((item: any) => (
                 <span
-                  key={specialty}
+                  key={item.specialty.id}
                   className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
                 >
-                  {specialty}
+                  {item.specialty.name}
                 </span>
               ))}
             </div>

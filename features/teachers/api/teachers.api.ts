@@ -53,3 +53,27 @@ export async function getAvailableSpecialties(): Promise<Specialties[]> {
 
   return response.json();
 }
+
+export async function getTeachers() {
+  const response = await fetch(`${env.apiUrl}/teachers`, {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch teachers");
+  }
+
+  return response.json();
+}
+
+export async function getTeacher(id: string) {
+  const response = await fetch(`${env.apiUrl}/teachers/${id}`, {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch teacher");
+  }
+
+  return response.json();
+}
