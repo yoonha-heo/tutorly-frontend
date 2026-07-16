@@ -37,3 +37,14 @@ export async function getMe(): Promise<Me | null> {
 
   return data.user;
 }
+
+export async function logout(): Promise<void> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Logout failed");
+  }
+}

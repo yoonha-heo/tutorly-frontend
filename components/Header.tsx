@@ -1,21 +1,19 @@
 "use client";
 
 import { useMe } from "@/features/auth/hooks/useMe";
+import { useLogout } from "@/features/auth/hooks/useLogout";
 import {
   ChevronDown,
   GraduationCap,
   HelpCircle,
-  Heart,
   Home,
   LogOut,
-  Menu,
   MessageSquare,
   Search,
-  Settings,
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 interface ProfileMenuItem {
@@ -57,9 +55,9 @@ const SECONDARY_MENU_ITEMS: ProfileMenuItem[] = [
 
 export default function Header() {
   const { data: me, isLoading } = useMe();
+  const logoutMutation = useLogout();
 
   const pathname = usePathname();
-  const router = useRouter();
 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
@@ -110,19 +108,9 @@ export default function Header() {
     };
   }, [isProfileMenuOpen]);
 
-  async function handleLogout() {
+  function handleLogout() {
     setIsProfileMenuOpen(false);
-
-    /*
-     * TODO:
-     * 현재 프로젝트의 logout mutation 또는 logout API로 교체.
-     *
-     * 예:
-     * await logoutMutation.mutateAsync();
-     */
-
-    router.push("/login");
-    router.refresh();
+    logoutMutation.mutate();
   }
 
   return (
