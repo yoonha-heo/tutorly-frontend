@@ -1,5 +1,5 @@
-import AuthForm from "@/components/auth/AuthForm";
-import { GuestGuard } from "@/components/auth/GuestGuard";
+import AuthForm from "@/features/auth/components/AuthForm";
+import { GuestGuard } from "@/components/GuestGuard";
 
 export default function TeacherLoginPage() {
   return (

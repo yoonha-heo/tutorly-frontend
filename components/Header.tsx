@@ -40,16 +40,6 @@ const MAIN_MENU_ITEMS: ProfileMenuItem[] = [
     href: "/lessons",
     icon: GraduationCap,
   },
-  {
-    label: "Saved tutors",
-    href: "/saved-tutors",
-    icon: Heart,
-  },
-  {
-    label: "Settings",
-    href: "/settings",
-    icon: Settings,
-  },
 ];
 
 const SECONDARY_MENU_ITEMS: ProfileMenuItem[] = [
@@ -261,17 +251,7 @@ function DesktopProfileMenu({
 
       <div className="my-4 border-t border-border" />
 
-      <nav className="space-y-1">
-        {SECONDARY_MENU_ITEMS.map((item) => (
-          <ProfileMenuLink
-            key={item.href}
-            item={item}
-            isActive={isCurrentPath(pathname, item.href)}
-          />
-        ))}
-
-        <LogoutButton onLogout={onLogout} />
-      </nav>
+      <LogoutButton onLogout={onLogout} />
     </div>
   );
 }
@@ -329,18 +309,7 @@ function MobileProfileMenu({
 
         <div className="my-6 border-t border-border" />
 
-        <nav className="space-y-1">
-          {SECONDARY_MENU_ITEMS.map((item) => (
-            <ProfileMenuLink
-              key={item.href}
-              item={item}
-              isActive={isCurrentPath(pathname, item.href)}
-              mobile
-            />
-          ))}
-
-          <LogoutButton onLogout={onLogout} mobile />
-        </nav>
+        <LogoutButton onLogout={onLogout} mobile />
       </aside>
     </div>
   );

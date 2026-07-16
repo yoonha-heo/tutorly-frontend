@@ -61,7 +61,7 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
           <span className="text-xl font-semibold text-foreground">
             ${teacher.hourlyRate}
           </span>{" "}
-          / hour
+          / lesson
         </p>
 
         <Link

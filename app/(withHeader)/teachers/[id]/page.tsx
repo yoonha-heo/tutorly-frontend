@@ -1,7 +1,7 @@
 import { Award, Languages, Star } from "lucide-react";
 import { notFound } from "next/navigation";
 
-import { TeacherBookingCard } from "@/components/teachers/TeacherBookingCard";
+import { TeacherBookingCard } from "@/features/teachers/components/TeacherBookingCard";
 import { getTeacher } from "@/features/teachers/api/teachers.api";
 import type { Teacher } from "@/features/teachers/types/teachers";
 
@@ -59,9 +59,7 @@ export default async function TeacherDetailPage({
                   {teacher.headline}
                 </p>
 
-                <p className="mt-5 text-sm text-muted-foreground">
-                  0 lessons taught
-                </p>
+                <p className="mt-5 text-sm text-muted-foreground">0 lessons</p>
               </div>
             </div>
           </section>

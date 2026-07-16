@@ -21,7 +21,7 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
             <p className="text-4xl font-semibold tracking-tight text-foreground">
               ${teacher.hourlyRate}
               <span className="ml-1 text-base font-normal text-muted-foreground">
-                / hour
+                / lesson
               </span>
             </p>
 
@@ -52,17 +52,6 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
           <MessageCircle className="size-5" />
           Send a message
         </button>
-
-        <div className="mt-6 border-t border-border pt-5">
-          <div className="flex items-start gap-3">
-            <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
-
-            <p className="text-sm leading-5 text-muted-foreground">
-              Free trial lesson available. No payment until your lesson is
-              confirmed.
-            </p>
-          </div>
-        </div>
       </aside>
 
       <BookingModal

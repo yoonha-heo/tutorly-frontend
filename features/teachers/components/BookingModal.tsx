@@ -202,13 +202,11 @@ export function BookingModal({ teacher, isOpen, onClose }: BookingModalProps) {
       <div className="flex max-h-[80dvh] w-full flex-col overflow-hidden rounded-t-3xl bg-background shadow-2xl sm:max-w-2xl sm:rounded-3xl">
         <header className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4 sm:px-7">
           <div>
-            <p className="text-sm font-medium text-primary">Tutorly lesson</p>
-
             <h2
               id="booking-modal-title"
               className="mt-0.5 text-xl font-semibold tracking-tight text-foreground"
             >
-              Book a lesson
+              Book lesson
             </h2>
           </div>
 
@@ -420,16 +418,7 @@ export function BookingModal({ teacher, isOpen, onClose }: BookingModalProps) {
         </div>
 
         <footer className="shrink-0 border-t border-border bg-background px-5 py-4 sm:px-7">
-          <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end">
-            <button
-              type="button"
-              onClick={handleClose}
-              disabled={isSubmitting}
-              className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-            >
-              Cancel
-            </button>
-
+          <div className="flex sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={handleContinue}
