@@ -1,4 +1,4 @@
-import { AuthGuard } from "@/features/auth/components/AuthGaurd";
+import { AuthGuard } from "@/components/auth/AuthGaurd";
 
 type Props = {
   children: React.ReactNode;

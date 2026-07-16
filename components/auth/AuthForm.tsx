@@ -6,9 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { loginWithGoogle } from "../api/authApi";
-import type { UserRole } from "../types/auth.types";
-import { getLoginRedirectPath } from "../utils/getLoginRedirectPath";
+import { loginWithGoogle } from "@/features/auth/api/authApi";
+import type { UserRole } from "@/features/auth/types/auth.types";
+import { getLoginRedirectPath } from "@/features/auth/utils/getLoginRedirectPath";
 
 type AuthFormProps = {
   title: string;

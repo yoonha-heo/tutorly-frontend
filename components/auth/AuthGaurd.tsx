@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { useMe } from "../hooks/useMe";
+import { useMe } from "@/features/auth/hooks/useMe";
 
 type AuthGuardProps = {
   children: React.ReactNode;

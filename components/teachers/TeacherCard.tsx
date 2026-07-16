@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
 import Link from "next/link";
 
-import { Teacher } from "../types/teachers";
+import type { Teacher } from "@/features/teachers/types/teachers";
 
 type TeacherCardProps = {
   teacher: Teacher;

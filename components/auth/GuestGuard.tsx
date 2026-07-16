@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMe } from "../hooks/useMe";
+import { useMe } from "@/features/auth/hooks/useMe";
 import { useEffect } from "react";
 
 type GuestGuardProps = {

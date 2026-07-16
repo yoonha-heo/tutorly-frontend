@@ -6,8 +6,8 @@ import { Search, ChevronDown } from "lucide-react";
 import { useTeacherOptions } from "@/features/teachers/hooks/useTeacherOptions";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useInfiniteTeachers } from "@/features/teachers/hooks/useInfiniteTeachers";
-import { TeacherCard } from "@/features/teachers/components/TeacherCard";
-import { TeacherCardSkeleton } from "@/features/teachers/components/TeacherCardSkeleton";
+import { TeacherCard } from "@/components/teachers/TeacherCard";
+import { TeacherCardSkeleton } from "@/components/teachers/TeacherCardSkeleton";
 import { Teacher } from "@/features/teachers/types/teachers";
 
 export default function TeachersPage() {
