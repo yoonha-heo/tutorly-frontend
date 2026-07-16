@@ -35,3 +35,9 @@ export type TeacherSpecialty = {
     name: string;
   };
 };
+
+export type TeacherAvailability = {
+  id: string;
+  startAt: string;
+  endAt: string;
+};

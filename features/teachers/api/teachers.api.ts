@@ -1,6 +1,6 @@
 import type { TeacherRegisterValues } from "../schemas/teacher-register.schema";
 import { env } from "@/config/env";
-import { Teacher } from "../types/teachers";
+import { Teacher, TeacherAvailability } from "../types/teachers";
 
 export type Languages = {
   id: string;
@@ -99,13 +99,30 @@ export async function getTeachers(
   return response.json();
 }
 
-export async function getTeacher(id: string) {
+export async function getTeacher(id: string): Promise<Teacher> {
   const response = await fetch(`${env.apiUrl}/teachers/${id}`, {
     credentials: "include",
   });
 
   if (!response.ok) {
     throw new Error("Failed to fetch teacher");
+  }
+
+  return response.json();
+}
+
+export async function getTeacherAvailabilities(
+  teacherId: string,
+): Promise<TeacherAvailability[]> {
+  const response = await fetch(
+    `${env.apiUrl}/teachers/${teacherId}/availabilities`,
+    {
+      credentials: "include",
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch teacher availabilities");
   }
 
   return response.json();
