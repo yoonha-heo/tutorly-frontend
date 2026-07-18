@@ -1,4 +1,4 @@
-import type { Me } from "../types/auth.types";
+import type { Me } from "../features/auth/types/auth.types";
 
 export function getLoginRedirectPath(user: Me) {
   if (user.role === "STUDENT") {

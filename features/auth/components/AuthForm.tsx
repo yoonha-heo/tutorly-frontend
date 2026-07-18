@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { loginWithGoogle } from "@/features/auth/api/authApi";
 import type { UserRole } from "@/features/auth/types/auth.types";
-import { getLoginRedirectPath } from "@/features/auth/utils/getLoginRedirectPath";
+import { getLoginRedirectPath } from "@/utils/getLoginRedirectPath";
 
 type AuthFormProps = {
   title: string;

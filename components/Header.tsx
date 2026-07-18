@@ -382,7 +382,7 @@ function UserAvatar({ name, profileImage, size }: UserAvatarProps) {
   if (profileImage) {
     return (
       <img
-        src={profileImage}
+        src={profileImage || "/images/empty-profile.png"}
         alt={name ?? "User"}
         className={`${sizeClass} shrink-0 rounded-xl object-cover`}
       />
