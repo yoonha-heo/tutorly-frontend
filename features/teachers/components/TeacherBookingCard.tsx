@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, MessageCircle, ShieldCheck, Star } from "lucide-react";
+import { CalendarDays, MessageCircle, Star } from "lucide-react";
 import { useState } from "react";
 
 import type { Teacher } from "@/features/teachers/types/teachers";
@@ -16,6 +16,7 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
   return (
     <>
       <aside className="rounded-3xl border border-border bg-background p-5 shadow-sm sm:p-6">
+        {/* Summary */}
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-4xl font-semibold tracking-tight text-foreground">
@@ -36,6 +37,7 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
           </div>
         </div>
 
+        {/* Booking Button */}
         <button
           type="button"
           onClick={() => setIsBookingModalOpen(true)}
@@ -45,6 +47,7 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
           Book lesson
         </button>
 
+        {/* Message Button */}
         <button
           type="button"
           className="mt-3 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 text-base font-semibold text-foreground transition-colors hover:bg-secondary"
