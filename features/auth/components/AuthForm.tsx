@@ -7,8 +7,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { loginWithGoogle } from "@/features/auth/api/authApi";
-import type { UserRole } from "@/features/auth/types/auth.types";
-import { getLoginRedirectPath } from "@/utils/getLoginRedirectPath";
+import type { Me, UserRole } from "@/features/auth/types/auth.types";
 
 type AuthFormProps = {
   title: string;
@@ -19,6 +18,22 @@ type AuthFormProps = {
 export default function AuthForm({ title, description, role }: AuthFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  function getLoginRedirectPath(user: Me) {
+    if (user.role === "STUDENT") {
+      return "/teachers";
+    }
+
+    if (user.role === "TEACHER") {
+      if (user.teacherProfile) {
+        return "/teachers/dashboard";
+      }
+
+      return "/teachers/registration";
+    }
+
+    return "/teachers";
+  }
 
   async function handleGoogleLoginSuccess(credential?: string) {
     if (!credential) return;

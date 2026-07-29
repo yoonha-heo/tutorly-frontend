@@ -5,8 +5,10 @@ import {
   getAvailableSpecialties,
 } from "@/features/teachers/api/teachers.api";
 
+const FALLBACK_DATA = { languages: [], specialties: [] };
+
 export function useTeacherOptions() {
-  return useQuery({
+  const queryInfo = useQuery({
     queryKey: ["teacher-options"],
     queryFn: async () => {
       const [languages, specialties] = await Promise.all([
@@ -17,4 +19,9 @@ export function useTeacherOptions() {
       return { languages, specialties };
     },
   });
+
+  return {
+    ...queryInfo,
+    data: queryInfo.data ?? FALLBACK_DATA,
+  };
 }
