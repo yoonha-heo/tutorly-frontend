@@ -20,7 +20,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-semibold text-foreground">Product</h3>
+          <p className="font-semibold text-foreground">Product</p>
 
           <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
             <li>
@@ -33,7 +33,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-semibold text-foreground">Languages</h3>
+          <p className="font-semibold text-foreground">Languages</p>
 
           <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
             <li>English</li>
@@ -44,7 +44,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-semibold text-foreground">Company</h3>
+          <p className="font-semibold text-foreground">Company</p>
 
           <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
             <li>About</li>
@@ -54,7 +54,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-semibold text-foreground">Support</h3>
+          <p className="font-semibold text-foreground">Support</p>
 
           <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
             <li>Help Center</li>
