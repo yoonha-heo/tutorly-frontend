@@ -1,5 +1,7 @@
 import { CalendarDays, Clock3 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { memo } from "react";
 
 import type { Booking } from "../api/bookings.api";
 import { LessonStatusBadge } from "./LessonStatusBadge";
@@ -12,9 +14,13 @@ import {
 
 interface LessonCardProps {
   booking: Booking;
+  priority?: boolean;
 }
 
-export function LessonCard({ booking }: LessonCardProps) {
+export const LessonCard = memo(function LessonCard({
+  booking,
+  priority,
+}: LessonCardProps) {
   const durationMinutes = getLessonDurationMinutes(
     booking.lessonStartAt,
     booking.lessonEndAt,
@@ -26,11 +32,12 @@ export function LessonCard({ booking }: LessonCardProps) {
         <div className="flex min-w-0 items-center gap-4">
           <div className="shrink-0">
             {booking.teacher.profileImageUrl ? (
-              <img
+              <Image
                 src={booking.teacher.profileImageUrl}
                 alt={booking.teacher.user.name}
                 width={56}
                 height={56}
+                priority={priority}
                 className="size-14 rounded-2xl object-cover"
               />
             ) : (
@@ -87,7 +94,7 @@ export function LessonCard({ booking }: LessonCardProps) {
       </div>
     </article>
   );
-}
+});
 
 function LessonAction({ booking }: LessonCardProps) {
   if (booking.status === "PENDING_PAYMENT") {
