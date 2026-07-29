@@ -57,9 +57,20 @@ export async function createBooking(data: CreateBookingData) {
   return response.json();
 }
 
+import { cookies } from "next/headers";
+
 export async function getMyBookings(): Promise<Booking[]> {
+  const cookieStore = await cookies();
+
+  const cookieString = cookieStore.toString();
+
   const response = await fetch(`${env.apiUrl}/bookings/me`, {
-    credentials: "include",
+    headers: {
+      ...(cookieString && { Cookie: cookieString }),
+      "Content-Type": "application/json",
+    },
+    // Server Component에서 최신 데이터를 보장받기 위한 설정 (필요에 따라 변경 가능)
+    cache: "no-store",
   });
 
   if (!response.ok) {

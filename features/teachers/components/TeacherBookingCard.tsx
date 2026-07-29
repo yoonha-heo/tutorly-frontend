@@ -2,13 +2,20 @@
 
 import { CalendarDays, MessageCircle, Star } from "lucide-react";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 
 import type { Teacher } from "@/features/teachers/types/teachers";
-import { BookingModal } from "./BookingModal";
 
 interface TeacherBookingCardProps {
   teacher: Teacher;
 }
+
+const BookingModal = dynamic(
+  () => import("./BookingModal").then((mod) => mod.BookingModal),
+  {
+    ssr: false,
+  },
+);
 
 export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
@@ -57,11 +64,13 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
         </button>
       </aside>
 
-      <BookingModal
-        teacher={teacher}
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-      />
+      {isBookingModalOpen && (
+        <BookingModal
+          teacher={teacher}
+          isOpen={isBookingModalOpen}
+          onClose={() => setIsBookingModalOpen(false)}
+        />
+      )}
     </>
   );
 }
