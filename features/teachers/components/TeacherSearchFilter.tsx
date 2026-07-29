@@ -22,10 +22,9 @@ export function TeacherSearchFilter({
   setSpecialty,
   totalCount,
 }: TeacherSearchFilterProps) {
-  // 💡 서버에서 prefetch된 캐시가 있다면 로딩 없이 즉시 데이터를 꺼내옵니다.
+  // prefetched cache data
   const { data: options } = useTeacherOptions();
-  const languages = options?.languages ?? [];
-  const specialties = options?.specialties ?? [];
+  const { languages, specialties } = options;
 
   return (
     <section className="rounded-[32px] border border-border bg-background p-6">
@@ -51,6 +50,7 @@ export function TeacherSearchFilter({
             value={language}
             onChange={(event) => setLanguage(event.target.value)}
             className="h-14 w-full appearance-none rounded-2xl border border-border bg-background px-5 pr-12 text-base font-medium text-foreground outline-none transition-colors focus:border-primary"
+            aria-label="Language selection"
           >
             <option value="">Language</option>
             {languages.map((lang) => (
@@ -68,6 +68,7 @@ export function TeacherSearchFilter({
             value={specialty}
             onChange={(event) => setSpecialty(event.target.value)}
             className="h-14 w-full appearance-none rounded-2xl border border-border bg-background px-5 pr-12 text-base font-medium text-foreground outline-none transition-colors focus:border-primary"
+            aria-label="Specialty selection"
           >
             <option value="">Specialty</option>
             {specialties.map((spec) => (

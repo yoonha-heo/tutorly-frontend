@@ -13,9 +13,13 @@ import {
 } from "@/features/teachers/api/teachers.api";
 
 export const metadata: Metadata = {
-  title: "Find Expert Online Language Tutors | Language Platform",
+  title: "Online Language Tutors | 1-on-1 Private Lessons | Language Platform",
   description:
-    "Book affordable 1-on-1 lessons with native-speaking language teachers. Filter by language, specialty, and schedule.",
+    "Learn languages with native-speaking professional tutors. Affordable 1-on-1 online lessons tailored to your goals. Start your free trial today.",
+  other: {
+    rel: "preconnect",
+    href: "https://storage.googleapis.com",
+  },
 };
 
 export default async function TeachersPage() {

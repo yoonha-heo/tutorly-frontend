@@ -1,23 +1,27 @@
 import { Star } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 import type { Teacher } from "@/features/teachers/types/teachers";
 
 type TeacherCardProps = {
   teacher: Teacher;
+  priority: boolean;
 };
 
-export function TeacherCard({ teacher }: TeacherCardProps) {
+export function TeacherCard({ teacher, priority }: TeacherCardProps) {
   return (
     <article className="flex flex-col rounded-3xl border border-border bg-background p-5">
       <header className="flex items-start justify-between gap-4">
         <div className="flex gap-4">
-          <img
+          <Image
             src={teacher.profileImageUrl ?? "/images/empty-profile.png"}
             alt={`${teacher.user.name} profile`}
+            width={80}
+            height={80}
             className="size-20 rounded-2xl object-cover"
+            priority={priority}
           />
-
           <div>
             <h2 className="font-semibold text-foreground">
               {teacher.user.name}
