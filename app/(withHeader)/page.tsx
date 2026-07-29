@@ -3,10 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star, ArrowRight, Calendar } from "lucide-react";
 
+import heroLessonImg from "@/public/images/hero-lesson.png";
+
 export const metadata: Metadata = {
-  title: "Learn Languages Online with Expert Tutors | Language Platform",
+  title: "Find Language Tutors | Filter by Language, Specialty & Schedule",
   description:
-    "Book affordable 1-on-1 online language lessons with expert tutors. Pick your perfect time and start speaking from day one.",
+    "Find and book the perfect online tutor. Filter by native language, specialty (TOEFL, Business, Conversation), and hourly rates to match your schedule.",
 };
 
 export default function HomePage() {
@@ -72,11 +74,12 @@ export default function HomePage() {
           {/* Right Visual Image */}
           <div className="relative w-full">
             <Image
-              src="/images/hero-lesson.png"
+              src={heroLessonImg}
               alt="Online language lesson with a tutor"
               width={600}
               height={450}
-              priority
+              priority={true}
+              sizes="(min-width: 1024px) 600px, 100vw"
               className="w-full h-auto rounded-3xl border border-border shadow-lg"
             />
 
