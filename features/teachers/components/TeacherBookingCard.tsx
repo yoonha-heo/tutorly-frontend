@@ -24,7 +24,7 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
     <>
       <aside className="rounded-3xl border border-border bg-background p-5 shadow-sm sm:p-6">
         {/* Summary */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start">
           <div>
             <p className="text-4xl font-semibold tracking-tight text-foreground">
               ${teacher.hourlyRate}
@@ -36,11 +36,6 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
             <p className="mt-2 text-sm text-muted-foreground">
               0 reviews · 0 lessons
             </p>
-          </div>
-
-          <div className="flex items-center gap-1.5 pt-2">
-            <Star className="size-4 fill-foreground text-foreground" />
-            <span className="text-sm font-semibold text-foreground">5.0</span>
           </div>
         </div>
 

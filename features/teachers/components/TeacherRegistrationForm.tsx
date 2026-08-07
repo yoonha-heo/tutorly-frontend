@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 import { useSubmitTeacherProfile } from "@/features/teachers/hooks/useSubmitTeacherProfile";
 import {
@@ -118,9 +119,11 @@ export function TeacherRegistrationForm() {
           <div className="flex items-center gap-5">
             <div className="flex size-24 items-center justify-center overflow-hidden rounded-3xl border border-border bg-secondary">
               {imagePreviewUrl ? (
-                <img
+                <Image
                   src={imagePreviewUrl}
                   alt="Profile preview"
+                  width={96}
+                  height={96}
                   className="size-full object-cover"
                 />
               ) : (

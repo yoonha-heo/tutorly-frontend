@@ -1,14 +1,14 @@
 "use client";
 
-import { AlertCircle, LoaderCircle, X } from "lucide-react";
+import { AlertCircle, LoaderCircle, Star, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 
 import { useCreateBooking } from "@/features/bookings/hooks/useCreateBooking";
 import { useTeacherAvailabilities } from "@/features/teachers/hooks/useTeacherAvailabilities";
 import type { Teacher } from "@/features/teachers/types/teachers";
 
-import { TeacherSummary } from "./TeacherSummary";
 import { DateSelector } from "./DateSelector";
 import { TimeSelector } from "./TimeSelector";
 import { processTeacherAvailabilities } from "@/utils/localDateTime";
@@ -109,8 +109,35 @@ export function BookingModal({ teacher, isOpen, onClose }: BookingModalProps) {
         </header>
 
         <div className="overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
-          <TeacherSummary teacher={teacher} />
+          {/* Teacher Summary */}
+          <section className="flex items-center gap-4 rounded-2xl border border-border bg-background p-4">
+            <Image
+              src={teacher.profileImageUrl || "/images/empty-profile.png"}
+              alt={`${teacher.user.name} profile`}
+              width={56}
+              height={56}
+              priority
+              className="size-14 shrink-0 rounded-2xl object-cover"
+            />
+            <div className="min-w-0">
+              <div className="flex items-center gap-3 mb-0.5">
+                <p className="text-base font-semibold text-foreground">
+                  {teacher.user.name}
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <Star className="size-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold text-foreground">
+                    5.0
+                  </span>
+                </div>
+              </div>
+              <p className="truncate text-sm text-muted-foreground">
+                {teacher.headline}
+              </p>
+            </div>
+          </section>
 
+          {/* Date time picker */}
           {isAvailabilityLoading ? (
             <div className="mt-7 grid grid-cols-4 gap-2 sm:grid-cols-7">
               {Array.from({ length: 7 }).map((_, i) => (
