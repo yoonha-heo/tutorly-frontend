@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getMyBookings } from "@/features/bookings/api/bookings.api"; // Server API
+import { getMyBookings } from "@/features/bookings/api/bookings.api";
 import { LessonSummaryCard } from "@/features/bookings/components/LessonSummaryCard";
 import { LessonListContainer } from "@/features/bookings/components/LessonListContainer";
 import { CalendarDays, CreditCard, Star } from "lucide-react";
