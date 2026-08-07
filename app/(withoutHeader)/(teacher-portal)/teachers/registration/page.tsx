@@ -26,7 +26,12 @@ export default async function TeacherRegistrationPage() {
     },
   });
 
+  // teacher registration guard
   const me = await getMe();
+
+  if (me?.role === "STUDENT") {
+    redirect("/teachers");
+  }
 
   if (me?.teacherProfile) {
     redirect("/teachers/dashboard");

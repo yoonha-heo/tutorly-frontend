@@ -20,19 +20,22 @@ export default function AuthForm({ title, description, role }: AuthFormProps) {
   const queryClient = useQueryClient();
 
   function getLoginRedirectPath(user: Me) {
-    if (user.role === "STUDENT") {
-      return "/teachers";
-    }
-
-    if (user.role === "TEACHER") {
-      if (user.teacherProfile) {
-        return "/teachers/dashboard";
-      }
-
+    if (user.role === "TEACHER" && !user.teacherProfile) {
       return "/teachers/registration";
     }
 
-    return "/teachers";
+    const searchParams = new URLSearchParams(window.location.search);
+    const callbackUrl = searchParams.get("callbackUrl");
+
+    if (callbackUrl) {
+      return callbackUrl;
+    }
+
+    if (user.role === "TEACHER") {
+      return "/teachers/dashboard";
+    }
+    
+    return "/";
   }
 
   async function handleGoogleLoginSuccess(credential?: string) {
@@ -42,6 +45,7 @@ export default function AuthForm({ title, description, role }: AuthFormProps) {
       const { user } = await loginWithGoogle(credential, role);
 
       queryClient.setQueryData(["me"], user);
+
       router.replace(getLoginRedirectPath(user));
     } catch (error) {
       console.error("Google login failed", error);
