@@ -1,6 +1,33 @@
 import type { TeacherRegisterValues } from "../schemas/teacher-register.schema";
 import { env } from "@/config/env";
-import { Teacher, TeacherAvailability } from "../types/teachers";
+import {
+  MyAvailability,
+  Teacher,
+  TeacherAvailability,
+  UpdateTeacherProfileData,
+} from "../types/teachers";
+
+async function getAuthHeaders(
+  contentType = "application/json",
+): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {};
+
+  if (contentType) {
+    headers["Content-Type"] = contentType;
+  }
+
+  if (typeof window === "undefined") {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const cookieString = cookieStore.toString();
+
+    if (cookieString) {
+      headers["Cookie"] = cookieString;
+    }
+  }
+
+  return headers;
+}
 
 export type Languages = {
   id: string;
@@ -101,7 +128,9 @@ export async function getTeachers(
 
 export async function getTeacher(id: string): Promise<Teacher> {
   const response = await fetch(`${env.apiUrl}/teachers/${id}`, {
+    headers: await getAuthHeaders(),
     credentials: "include",
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -123,6 +152,59 @@ export async function getTeacherAvailabilities(
 
   if (!response.ok) {
     throw new Error("Failed to fetch teacher availabilities");
+  }
+
+  return response.json();
+}
+
+export async function getMyAvailabilities(): Promise<MyAvailability[]> {
+  const response = await fetch(`${env.apiUrl}/availabilities/me`, {
+    headers: await getAuthHeaders(),
+    credentials: "include",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch my availabilities");
+  }
+
+  return response.json();
+}
+
+export type AvailabilityUpdateItem = {
+  id: string;
+  isOpen: boolean;
+};
+
+export async function updateAvailabilities(
+  items: AvailabilityUpdateItem[],
+): Promise<{ updatedCount: number }> {
+  const response = await fetch(`${env.apiUrl}/availabilities`, {
+    method: "PATCH",
+    headers: await getAuthHeaders(),
+    credentials: "include",
+    body: JSON.stringify({ items }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update availabilities");
+  }
+
+  return response.json();
+}
+
+export async function updateTeacherProfile(
+  data: UpdateTeacherProfileData,
+): Promise<Teacher> {
+  const response = await fetch(`${env.apiUrl}/teachers/profile`, {
+    method: "PATCH",
+    headers: await getAuthHeaders(),
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update teacher profile");
   }
 
   return response.json();

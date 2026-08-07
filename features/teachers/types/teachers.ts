@@ -41,3 +41,20 @@ export type TeacherAvailability = {
   startAt: string;
   endAt: string;
 };
+
+export type MyAvailability = {
+  id: string;
+  startAt: string;
+  endAt: string;
+  isOpen: boolean;
+  blocks: { id: string }[];
+};
+
+export type UpdateTeacherProfileData = {
+  headline: string;
+  bio: string;
+  profileImageUrl: string;
+  hourlyRate: number;
+  languages: string[];
+  specialties: string[];
+};
