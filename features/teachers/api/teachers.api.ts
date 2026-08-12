@@ -1,5 +1,6 @@
 import type { TeacherRegisterValues } from "../schemas/teacher-register.schema";
 import { env } from "@/config/env";
+import { apiFetch } from "@/utils/apiClient";
 import {
   MyAvailability,
   Teacher,
@@ -59,7 +60,7 @@ export type TeacherListResponse = {
 };
 
 export async function submitTeacherProfile(data: TeacherRegisterValues) {
-  const res = await fetch(`${env.apiUrl}/teachers/profile`, {
+  return apiFetch<Teacher>(`${env.apiUrl}/teachers/profile`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -67,36 +68,18 @@ export async function submitTeacherProfile(data: TeacherRegisterValues) {
     credentials: "include",
     body: JSON.stringify(data),
   });
-
-  if (!res.ok) {
-    throw new Error("Failed to submit teacher profile");
-  }
-
-  return res.json();
 }
 
 export async function getAvailableLanguages(): Promise<Languages[]> {
-  const response = await fetch(`${env.apiUrl}/teachers/languages`, {
+  return apiFetch<Languages[]>(`${env.apiUrl}/teachers/languages`, {
     credentials: "include",
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch langueages");
-  }
-
-  return response.json();
 }
 
 export async function getAvailableSpecialties(): Promise<Specialties[]> {
-  const response = await fetch(`${env.apiUrl}/teachers/specialties`, {
+  return apiFetch<Specialties[]>(`${env.apiUrl}/teachers/specialties`, {
     credentials: "include",
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch specialties");
-  }
-
-  return response.json();
 }
 
 export async function getTeachers(
@@ -112,63 +95,39 @@ export async function getTeachers(
 
   const queryString = searchParams.toString();
 
-  const response = await fetch(
+  return apiFetch<TeacherListResponse>(
     `${env.apiUrl}/teachers?${queryString ? `${queryString}` : ""}`,
     {
       credentials: "include",
     },
   );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch teachers");
-  }
-
-  return response.json();
 }
 
 export async function getTeacher(id: string): Promise<Teacher> {
-  const response = await fetch(`${env.apiUrl}/teachers/${id}`, {
+  return apiFetch<Teacher>(`${env.apiUrl}/teachers/${id}`, {
     headers: await getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch teacher");
-  }
-
-  return response.json();
 }
 
 export async function getTeacherAvailabilities(
   teacherId: string,
 ): Promise<TeacherAvailability[]> {
-  const response = await fetch(
+  return apiFetch<TeacherAvailability[]>(
     `${env.apiUrl}/teachers/${teacherId}/availabilities`,
     {
       credentials: "include",
     },
   );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch teacher availabilities");
-  }
-
-  return response.json();
 }
 
 export async function getMyAvailabilities(): Promise<MyAvailability[]> {
-  const response = await fetch(`${env.apiUrl}/availabilities/me`, {
+  return apiFetch<MyAvailability[]>(`${env.apiUrl}/availabilities/me`, {
     headers: await getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch my availabilities");
-  }
-
-  return response.json();
 }
 
 export type AvailabilityUpdateItem = {
@@ -179,33 +138,21 @@ export type AvailabilityUpdateItem = {
 export async function updateAvailabilities(
   items: AvailabilityUpdateItem[],
 ): Promise<{ updatedCount: number }> {
-  const response = await fetch(`${env.apiUrl}/availabilities`, {
+  return apiFetch<{ updatedCount: number }>(`${env.apiUrl}/availabilities`, {
     method: "PATCH",
     headers: await getAuthHeaders(),
     credentials: "include",
     body: JSON.stringify({ items }),
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to update availabilities");
-  }
-
-  return response.json();
 }
 
 export async function updateTeacherProfile(
   data: UpdateTeacherProfileData,
 ): Promise<Teacher> {
-  const response = await fetch(`${env.apiUrl}/teachers/profile`, {
+  return apiFetch<Teacher>(`${env.apiUrl}/teachers/profile`, {
     method: "PATCH",
     headers: await getAuthHeaders(),
     credentials: "include",
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to update teacher profile");
-  }
-
-  return response.json();
 }

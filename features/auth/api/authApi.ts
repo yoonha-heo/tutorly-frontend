@@ -1,23 +1,26 @@
 import type { UserRole, Me } from "../types/auth.types";
+import { apiFetch } from "@/utils/apiClient";
+import { ApiError } from "@/utils/apiError";
+
+type LoginWithGoogleResponse = {
+  user: Me;
+};
 
 export async function loginWithGoogle(idToken: string, role: UserRole) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/google`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  return apiFetch<LoginWithGoogleResponse>(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        idToken,
+        role,
+      }),
     },
-    credentials: "include",
-    body: JSON.stringify({
-      idToken,
-      role,
-    }),
-  });
-
-  if (!res.ok) {
-    throw new Error("Google login failed");
-  }
-
-  return res.json();
+  );
 }
 
 export async function getMe(): Promise<Me | null> {
@@ -36,31 +39,32 @@ export async function getMe(): Promise<Me | null> {
     }
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-    headers,
-    credentials: "include", // 클라이언트(브라우저) 환경 대응
-    cache: "no-store",
-  });
+  try {
+    const data = await apiFetch<{ user: Me }>(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
+      {
+        headers,
+        credentials: "include", // 클라이언트(브라우저) 환경 대응
+        cache: "no-store",
+      },
+    );
 
-  if (res.status === 401) {
-    return null;
+    return data.user;
+  } catch (error) {
+    if (ApiError.isApiError(error) && error.statusCode === 401) {
+      return null;
+    }
+
+    throw error;
   }
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch me");
-  }
-
-  const data: { user: Me } = await res.json();
-  return data.user;
 }
 
 export async function logout(): Promise<void> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
-    method: "POST",
-    credentials: "include",
-  });
-
-  if (!res.ok) {
-    throw new Error("Logout failed");
-  }
+  await apiFetch<{ success: boolean }>(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+    {
+      method: "POST",
+      credentials: "include",
+    },
+  );
 }

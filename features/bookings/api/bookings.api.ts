@@ -1,4 +1,6 @@
 import { env } from "@/config/env";
+import { apiFetch } from "@/utils/apiClient";
+import { cookies } from "next/headers";
 
 export type LessonType = "STANDARD";
 
@@ -41,7 +43,7 @@ export type CreateBookingData = {
 };
 
 export async function createBooking(data: CreateBookingData) {
-  const response = await fetch(`${env.apiUrl}/bookings`, {
+  return apiFetch<Booking>(`${env.apiUrl}/bookings`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -49,22 +51,14 @@ export async function createBooking(data: CreateBookingData) {
     credentials: "include",
     body: JSON.stringify(data),
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to create booking");
-  }
-
-  return response.json();
 }
-
-import { cookies } from "next/headers";
 
 export async function getMyBookings(): Promise<Booking[]> {
   const cookieStore = await cookies();
 
   const cookieString = cookieStore.toString();
 
-  const response = await fetch(`${env.apiUrl}/bookings/me`, {
+  return apiFetch<Booking[]>(`${env.apiUrl}/bookings/me`, {
     headers: {
       ...(cookieString && { Cookie: cookieString }),
       "Content-Type": "application/json",
@@ -72,10 +66,4 @@ export async function getMyBookings(): Promise<Booking[]> {
     // Server Component에서 최신 데이터를 보장받기 위한 설정 (필요에 따라 변경 가능)
     cache: "no-store",
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch my bookings");
-  }
-
-  return response.json();
 }
