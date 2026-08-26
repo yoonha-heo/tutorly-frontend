@@ -7,7 +7,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { Calendar, Clock, LoaderCircle, Lock, ShieldCheck } from "lucide-react";
+import { Calendar, Clock, LoaderCircle, Lock } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -46,11 +46,7 @@ export function CheckoutClient({ booking }: CheckoutClientProps) {
   const clientSecret = data?.clientSecret;
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
-        Checkout
-      </h1>
-
+    <main className="mx-auto max-w-6xl px-4 pt-4 pb-8 sm:px-6 sm:pt-5 sm:pb-10 lg:px-8">
       <CountdownBanner secondsLeft={secondsLeft} />
 
       {clientSecret ? (
@@ -101,8 +97,6 @@ function CheckoutLayout({
   );
   const lessonLabel = `${durationMinutes}-Min Lesson`;
   const lessonPrice = booking.price;
-  const serviceFee = 0;
-  const total = lessonPrice + serviceFee;
   const teacherName = booking.teacher.user.name;
 
   return (
@@ -164,16 +158,7 @@ function CheckoutLayout({
 
           {paymentMethod}
 
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <Lock className="size-3.5" />
-              256-bit SSL encrypted
-            </span>
-            <span className="flex items-center gap-1.5">
-              Powered by
-              <span className="font-semibold text-foreground">Stripe</span>
-            </span>
-          </div>
+
         </section>
       </div>
 
@@ -187,41 +172,18 @@ function CheckoutLayout({
               <dt className="text-muted-foreground">1x {lessonLabel}</dt>
               <dd className="font-medium text-foreground">${lessonPrice}</dd>
             </div>
-            <div className="flex items-center justify-between">
-              <dt className="text-muted-foreground">Service fee</dt>
-              <dd className="font-medium text-foreground">
-                {serviceFee === 0 ? "Included" : `$${serviceFee}`}
-              </dd>
-            </div>
           </dl>
 
           <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
             <span className="text-sm font-semibold text-foreground">
               Total amount
             </span>
-            <span className="text-xl font-bold text-foreground">${total}</span>
+            <span className="text-xl font-bold text-foreground">
+              ${lessonPrice}
+            </span>
           </div>
 
           {payButton}
-
-          <p className="mt-3 text-center text-xs text-muted-foreground">
-            You won&apos;t be charged until payment is confirmed.
-          </p>
-        </section>
-
-        <section className="flex gap-3 rounded-2xl border border-border bg-secondary/50 p-5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-            <ShieldCheck className="size-4" />
-          </span>
-          <div>
-            <p className="text-sm font-semibold text-foreground">
-              100% Satisfaction Guarantee
-            </p>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              If the lesson doesn&apos;t happen or you&apos;re not satisfied,
-              we&apos;ll replace the tutor for free or refund you.
-            </p>
-          </div>
         </section>
       </div>
     </div>
@@ -322,32 +284,29 @@ function CountdownBanner({ secondsLeft }: { secondsLeft: number }) {
   const isExpiring = secondsLeft <= 60;
 
   return (
-    <div className="mt-5">
-      <div
-        role="status"
-        className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-amber-900"
-      >
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-100">
-          <Clock className="size-4" />
-        </span>
-        <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-          <p className="text-sm leading-snug">
-            Your lesson time is reserved. Please complete payment to keep this
-            slot.
-          </p>
-          <p
-            className={cn(
-              "shrink-0 font-mono text-sm font-semibold tabular-nums",
-              isExpiring && "text-red-700",
-            )}
-          >
-            {formattedCountdown}
-          </p>
-        </div>
+    <div
+      role="status"
+      className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-amber-900"
+    >
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-100">
+        <Clock className="size-4" />
+      </span>
+      <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <p className="text-sm leading-snug">
+          Your lesson is reserved. Please complete payment.
+        </p>
+        <p
+          className={cn(
+            "shrink-0 font-mono text-sm font-semibold tabular-nums",
+            isExpiring && "text-red-700",
+          )}
+        >
+          {formattedCountdown}
+        </p>
       </div>
     </div>
   );
-}
+  }
 
 function getSecondsUntil(expiresAt: string | null) {
   if (!expiresAt) return 0;
