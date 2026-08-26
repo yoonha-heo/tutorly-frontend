@@ -34,7 +34,10 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
             </p>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              0 reviews · 0 lessons
+              {formatReviewLessonCount(
+                teacher.reviewCount,
+                teacher.lessonCount,
+              )}
             </p>
           </div>
         </div>
@@ -68,4 +71,10 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
       )}
     </>
   );
+}
+
+function formatReviewLessonCount(reviewCount: number, lessonCount: number) {
+  const reviewsLabel = reviewCount === 1 ? "review" : "reviews";
+  const lessonsLabel = lessonCount === 1 ? "lesson" : "lessons";
+  return `${reviewCount} ${reviewsLabel} · ${lessonCount} ${lessonsLabel}`;
 }

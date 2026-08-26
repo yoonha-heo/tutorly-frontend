@@ -7,6 +7,9 @@ export type Teacher = {
   hourlyRate: number;
   profileImageUrl: string | null;
   status: TeacherStatus;
+  averageRating: number;
+  reviewCount: number;
+  lessonCount: number;
 
   user: {
     id: string;

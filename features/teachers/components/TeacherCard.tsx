@@ -34,14 +34,21 @@ export function TeacherCard({ teacher, priority }: TeacherCardProps) {
             </p>
 
             <p className="mt-1 text-sm text-muted-foreground">
-              0 reviews · 0 lessons
+              {formatReviewLessonCount(
+                teacher.reviewCount,
+                teacher.lessonCount,
+              )}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-1 font-medium text-foreground">
           <Star className="size-4 fill-yellow-400 text-yellow-400" />
-          <span>New</span>
+          <span>
+            {teacher.reviewCount === 0
+              ? "New"
+              : teacher.averageRating.toFixed(1)}
+          </span>
         </div>
       </header>
 
@@ -77,4 +84,10 @@ export function TeacherCard({ teacher, priority }: TeacherCardProps) {
       </footer>
     </article>
   );
+}
+
+function formatReviewLessonCount(reviewCount: number, lessonCount: number) {
+  const reviewsLabel = reviewCount === 1 ? "review" : "reviews";
+  const lessonsLabel = lessonCount === 1 ? "lesson" : "lessons";
+  return `${reviewCount} ${reviewsLabel} · ${lessonCount} ${lessonsLabel}`;
 }

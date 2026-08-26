@@ -35,8 +35,12 @@ export function TeacherProfile({ teacher }: TeacherProfileProps) {
 
               <div className="flex items-center gap-1.5 text-sm">
                 <Star className="size-5 fill-yellow-400 text-yellow-400" />
-                <span className="font-semibold text-foreground">5.0</span>
-                <span className="text-muted-foreground">(0)</span>
+                <span className="font-semibold text-foreground">
+                  {teacher.averageRating.toFixed(1)}
+                </span>
+                <span className="text-muted-foreground">
+                  ({teacher.reviewCount})
+                </span>
               </div>
             </div>
 
@@ -44,7 +48,10 @@ export function TeacherProfile({ teacher }: TeacherProfileProps) {
               {teacher.headline}
             </p>
 
-            <p className="mt-5 text-sm text-muted-foreground">0 lessons</p>
+            <p className="mt-5 text-sm text-muted-foreground">
+              {teacher.lessonCount}{" "}
+              {teacher.lessonCount === 1 ? "lesson" : "lessons"}
+            </p>
           </div>
         </div>
       </section>

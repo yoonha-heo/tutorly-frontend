@@ -133,7 +133,9 @@ export function BookingModal({ teacher, isOpen, onClose }: BookingModalProps) {
                 <div className="flex items-center gap-1.5">
                   <Star className="size-4 fill-yellow-400 text-yellow-400" />
                   <span className="text-sm font-semibold text-foreground">
-                    5.0
+                    {teacher.reviewCount === 0
+                      ? "New"
+                      : teacher.averageRating.toFixed(1)}
                   </span>
                 </div>
               </div>
