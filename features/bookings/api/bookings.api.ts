@@ -1,6 +1,5 @@
 import { env } from "@/config/env";
 import { apiFetch } from "@/utils/apiClient";
-import { cookies } from "next/headers";
 
 export type LessonType = "STANDARD";
 
@@ -8,8 +7,9 @@ export type BookingStatus =
   | "PENDING_PAYMENT"
   | "CONFIRMED"
   | "COMPLETED"
-  | "CANCELED"
-  | "EXPIRED";
+  | "CANCELLED"
+  | "EXPIRED"
+  | "REFUND_PROCESSING";
 
 export type Booking = {
   id: string;
@@ -54,16 +54,37 @@ export async function createBooking(data: CreateBookingData) {
 }
 
 export async function getMyBookings(): Promise<Booking[]> {
-  const cookieStore = await cookies();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
 
-  const cookieString = cookieStore.toString();
+  if (typeof window === "undefined") {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const cookieString = cookieStore.toString();
+
+    if (cookieString) {
+      headers["Cookie"] = cookieString;
+    }
+  }
 
   return apiFetch<Booking[]>(`${env.apiUrl}/bookings/me`, {
-    headers: {
-      ...(cookieString && { Cookie: cookieString }),
-      "Content-Type": "application/json",
-    },
-    // Server Component에서 최신 데이터를 보장받기 위한 설정 (필요에 따라 변경 가능)
+    headers,
+    credentials: "include",
     cache: "no-store",
   });
+}
+
+export type CancelBookingResponse = {
+  success: boolean;
+};
+
+export async function cancelBooking(bookingId: string) {
+  return apiFetch<CancelBookingResponse>(
+    `${env.apiUrl}/bookings/${bookingId}/cancel`,
+    {
+      method: "POST",
+      credentials: "include",
+    },
+  );
 }

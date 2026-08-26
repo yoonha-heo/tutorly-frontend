@@ -1,9 +1,12 @@
+"use client";
+
 import { CalendarDays, Clock3 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { memo } from "react";
 
 import type { Booking } from "../api/bookings.api";
+import { useCancelBooking } from "../hooks/useCancelBooking";
 import { LessonStatusBadge } from "./LessonStatusBadge";
 import {
   formatLocalLessonDate,
@@ -97,25 +100,35 @@ export const LessonCard = memo(function LessonCard({
 });
 
 function LessonAction({ booking }: LessonCardProps) {
+  const canCancel = new Date(booking.lessonStartAt) > new Date();
+
   if (booking.status === "PENDING_PAYMENT") {
     return (
-      <Link
-        href={`/bookings/${booking.id}/payment`}
-        className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
-      >
-        Complete payment
-      </Link>
+      <div className="flex flex-wrap items-center gap-2">
+        {canCancel && <CancelLessonButton bookingId={booking.id} />}
+        {canCancel && (
+          <Link
+            href={`/checkout/${booking.id}`}
+            className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
+          >
+            Complete payment
+          </Link>
+        )}
+      </div>
     );
   }
 
   if (booking.status === "CONFIRMED") {
     return (
-      <button
-        type="button"
-        className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-secondary/50 px-5 text-sm font-semibold text-muted-foreground cursor-not-allowed"
-      >
-        View lesson
-      </button>
+      <div className="flex flex-wrap items-center gap-2">
+        {canCancel && <CancelLessonButton bookingId={booking.id} />}
+        <button
+          type="button"
+          className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-secondary/50 px-5 text-sm font-semibold text-muted-foreground cursor-not-allowed"
+        >
+          View lesson
+        </button>
+      </div>
     );
   }
 
@@ -131,4 +144,24 @@ function LessonAction({ booking }: LessonCardProps) {
   }
 
   return null;
+}
+
+function CancelLessonButton({ bookingId }: { bookingId: string }) {
+  const cancelBooking = useCancelBooking();
+
+  return (
+    <button
+      type="button"
+      disabled={cancelBooking.isPending}
+      onClick={() => {
+        if (!window.confirm("Cancel this lesson? This cannot be undone.")) {
+          return;
+        }
+        cancelBooking.mutate(bookingId);
+      }}
+      className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {cancelBooking.isPending ? "Canceling..." : "Cancel"}
+    </button>
+  );
 }
