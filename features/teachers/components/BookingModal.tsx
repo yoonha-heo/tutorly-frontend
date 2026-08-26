@@ -4,6 +4,7 @@ import { AlertCircle, LoaderCircle, Star, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { useCreateBooking } from "@/features/bookings/hooks/useCreateBooking";
 import { useTeacherAvailabilities } from "@/features/teachers/hooks/useTeacherAvailabilities";
@@ -20,6 +21,7 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ teacher, isOpen, onClose }: BookingModalProps) {
+  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [selectedDateKey, setSelectedDateKey] = useState("");
@@ -76,6 +78,10 @@ export function BookingModal({ teacher, isOpen, onClose }: BookingModalProps) {
     createBookingMutation.mutate(
       { availabilityId: selectedAvailabilityId, lessonType: "STANDARD" },
       {
+        onSuccess: (booking) => {
+          onClose();
+          router.push(`/checkout/${booking.id}`);
+        },
         onError: () =>
           setErrorMessage("Could not create the booking. Please try again."),
         onSettled: () => setIsSubmitting(false),

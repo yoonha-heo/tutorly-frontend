@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
-const STUDENT_PROTECTED_ROUTES = ["/lessons"];
+const STUDENT_PROTECTED_ROUTES = ["/lessons", "/checkout"];
 const TEACHER_PROTECTED_ROUTES = [
   "/teachers/registration",
   "/teachers/dashboard",
