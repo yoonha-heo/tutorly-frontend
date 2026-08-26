@@ -2,8 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { TeacherBookingCard } from "@/features/teachers/components/TeacherBookingCard";
-import { TeacherProfile } from "@/features/teachers/components/TeacherProfile"; // 💡 새로 만든 메인 프로필 컴포넌트
+import { TeacherProfile } from "@/features/teachers/components/TeacherProfile";
+import { ReviewList } from "@/features/reviews/components/ReviewList";
 import { getTeacher } from "@/features/teachers/api/teachers.api";
+import { getTeacherReviews } from "@/features/reviews/api/reviews.api";
 import type { Teacher } from "@/features/teachers/types/teachers";
 
 interface TeacherDetailPageProps {
@@ -75,10 +77,15 @@ export default async function TeacherDetailPage({
     notFound();
   }
 
+  const initialReviews = await getTeacherReviews(id, { page: 1, limit: 4 });
+
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <TeacherProfile teacher={teacher} />
+        <div className="min-w-0 space-y-6">
+          <TeacherProfile teacher={teacher} />
+          <ReviewList teacherId={id} initialData={initialReviews} />
+        </div>
 
         <div className="lg:sticky lg:top-24">
           <TeacherBookingCard teacher={teacher} />

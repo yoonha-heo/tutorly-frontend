@@ -3,7 +3,8 @@
 import { CalendarDays, Clock3 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { memo } from "react";
+import dynamic from "next/dynamic";
+import { memo, useState } from "react";
 
 import type { Booking } from "../api/bookings.api";
 import { useCancelBooking } from "../hooks/useCancelBooking";
@@ -14,6 +15,14 @@ import {
   getLessonDurationMinutes,
   formatLocalBookedDate,
 } from "@/utils/localDateTime";
+
+const ReviewModal = dynamic(
+  () =>
+    import("@/features/reviews/components/ReviewModal").then(
+      (mod) => mod.ReviewModal,
+    ),
+  { ssr: false },
+);
 
 interface LessonCardProps {
   booking: Booking;
@@ -122,28 +131,62 @@ function LessonAction({ booking }: LessonCardProps) {
     return (
       <div className="flex flex-wrap items-center gap-2">
         {canCancel && <CancelLessonButton bookingId={booking.id} />}
-        <button
-          type="button"
-          className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-secondary/50 px-5 text-sm font-semibold text-muted-foreground cursor-not-allowed"
-        >
-          View lesson
-        </button>
+        {booking.meetingUrl && (
+          <a
+            href={booking.meetingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
+          >
+            Join lesson
+          </a>
+        )}
       </div>
     );
   }
 
   if (booking.status === "COMPLETED") {
     return (
-      <Link
-        href={`/teachers/${booking.teacherId}`}
-        className="inline-flex h-11 items-center justify-center rounded-xl bg-secondary px-5 text-sm font-semibold text-accent-foreground transition-colors hover:opacity-80"
-      >
-        Book again
-      </Link>
+      <div className="flex flex-wrap items-center gap-2">
+        {!booking.review && <WriteReviewButton booking={booking} />}
+        <Link
+          href={`/teachers/${booking.teacherId}`}
+          className="inline-flex h-11 items-center justify-center rounded-xl bg-secondary px-5 text-sm font-semibold text-accent-foreground transition-colors hover:opacity-80"
+        >
+          Book again
+        </Link>
+      </div>
     );
   }
 
   return null;
+}
+
+function WriteReviewButton({ booking }: { booking: Booking }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  if (hasSubmitted) return null;
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
+      >
+        Write a review
+      </button>
+      {isOpen && (
+        <ReviewModal
+          booking={booking}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          onSubmitted={() => setHasSubmitted(true)}
+        />
+      )}
+    </>
+  );
 }
 
 function CancelLessonButton({ bookingId }: { bookingId: string }) {

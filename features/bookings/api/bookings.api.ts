@@ -21,6 +21,7 @@ export type Booking = {
   lessonEndAt: string;
   price: number;
   status: BookingStatus;
+  meetingUrl: string | null;
   paymentExpiresAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -35,6 +36,7 @@ export type Booking = {
       name: string;
     };
   };
+  review: { id: string } | null;
 };
 
 export type CreateBookingData = {
