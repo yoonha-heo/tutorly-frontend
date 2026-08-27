@@ -8,7 +8,7 @@ import Image from "next/image";
 import {
   GraduationCap,
   Home,
-  MessageSquare,
+  LayoutDashboard,
   LogOut,
   ChevronDown,
   X,
@@ -16,6 +16,7 @@ import {
 
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useLogout } from "@/features/auth/hooks/useLogout";
+import type { UserRole } from "@/features/auth/types/auth.types";
 
 export default function Header() {
   const { data: me, isLoading } = useMe();
@@ -50,12 +51,14 @@ export default function Header() {
           </Link>
 
           <div className="ml-8 hidden items-center gap-6 md:flex">
-            <Link
-              href="/teachers"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Find a tutor
-            </Link>
+            {!isLoading && me?.role !== "TEACHER" && (
+              <Link
+                href="/teachers"
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Find a tutor
+              </Link>
+            )}
 
             {!isLoading && !me && (
               <Link
@@ -105,7 +108,11 @@ export default function Header() {
                     profileImage={me.profileImage}
                   />
                   <div className="my-4 border-t border-border" />
-                  <NavLinks pathname={pathname} onClose={handleClose} />
+                  <NavLinks
+                    pathname={pathname}
+                    onClose={handleClose}
+                    role={me.role}
+                  />
                   <div className="my-4 border-t border-border" />
                   <LogoutButton
                     onLogout={() => {
@@ -144,6 +151,7 @@ export default function Header() {
                       <NavLinks
                         pathname={pathname}
                         onClose={handleClose}
+                        role={me.role}
                         mobile
                       />
                       <div className="my-6 border-t border-border" />
@@ -171,17 +179,27 @@ export default function Header() {
 function NavLinks({
   pathname,
   onClose,
+  role,
   mobile = false,
 }: {
   pathname: string;
   onClose: () => void;
+  role: UserRole;
   mobile?: boolean;
 }) {
-  const items = [
-    { label: "Home", href: "/", icon: Home },
-    { label: "My lessons", href: "/lessons", icon: GraduationCap },
-    // { label: "Messages", href: "/messages", icon: MessageSquare },
-  ];
+  const items =
+    role === "TEACHER"
+      ? [
+          {
+            label: "Dashboard",
+            href: "/teachers/dashboard",
+            icon: LayoutDashboard,
+          },
+        ]
+      : [
+          { label: "Home", href: "/", icon: Home },
+          { label: "My lessons", href: "/lessons", icon: GraduationCap },
+        ];
 
   return (
     <nav className="space-y-1">
