@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, MessageCircle, Star } from "lucide-react";
+import { CalendarDays, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
@@ -17,8 +17,16 @@ const BookingModal = dynamic(
   },
 );
 
+const MessageModal = dynamic(
+  () => import("./MessageModal").then((mod) => mod.MessageModal),
+  {
+    ssr: false,
+  },
+);
+
 export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
   return (
     <>
@@ -55,6 +63,7 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
         {/* Message Button */}
         <button
           type="button"
+          onClick={() => setIsMessageModalOpen(true)}
           className="mt-3 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 text-base font-semibold text-foreground transition-colors hover:bg-secondary"
         >
           <MessageCircle className="size-5" />
@@ -67,6 +76,14 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
           teacher={teacher}
           isOpen={isBookingModalOpen}
           onClose={() => setIsBookingModalOpen(false)}
+        />
+      )}
+
+      {isMessageModalOpen && (
+        <MessageModal
+          teacher={teacher}
+          isOpen={isMessageModalOpen}
+          onClose={() => setIsMessageModalOpen(false)}
         />
       )}
     </>
