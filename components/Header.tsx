@@ -11,11 +11,13 @@ import {
   LayoutDashboard,
   LogOut,
   ChevronDown,
+  MessageCircle,
   X,
 } from "lucide-react";
 
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useLogout } from "@/features/auth/hooks/useLogout";
+import { useChatList } from "@/features/chats/hooks/useChatList";
 import type { UserRole } from "@/features/auth/types/auth.types";
 
 export default function Header() {
@@ -195,11 +197,16 @@ function NavLinks({
             href: "/teachers/dashboard",
             icon: LayoutDashboard,
           },
+          { label: "Messages", href: "/chats", icon: MessageCircle },
         ]
       : [
           { label: "Home", href: "/", icon: Home },
           { label: "My lessons", href: "/lessons", icon: GraduationCap },
+          { label: "Messages", href: "/chats", icon: MessageCircle },
         ];
+
+  const { data: chats } = useChatList();
+  const hasUnread = (chats?.items ?? []).some((item) => item.unreadCount > 0);
 
   return (
     <nav className="space-y-1">
@@ -218,7 +225,12 @@ function NavLinks({
             } ${isActive ? "bg-secondary text-foreground" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}
           >
             <Icon className="size-5 shrink-0" />
-            {item.label}
+            <span className="relative">
+              {item.label}
+              {item.href === "/chats" && hasUnread && (
+                <span className="absolute top-1 -right-2.5 size-[5px] rounded-full bg-green-500" />
+              )}
+            </span>
           </Link>
         );
       })}

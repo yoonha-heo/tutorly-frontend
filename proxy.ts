@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
+const AUTH_PROTECTED_ROUTES = ["/chats"];
 const STUDENT_PROTECTED_ROUTES = ["/lessons", "/checkout"];
 const TEACHER_PROTECTED_ROUTES = [
   "/teachers/registration",
@@ -13,6 +14,17 @@ export function proxy(request: NextRequest) {
 
   // JWT from HttpOnly cookie
   const token = request.cookies.get("accessToken")?.value;
+
+  // login required (student and teacher)
+  const isAuthRoute = AUTH_PROTECTED_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  );
+  if (isAuthRoute && !token) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
+
+    return NextResponse.redirect(loginUrl);
+  }
 
   // teachers only page
   const isTeacherRoute = TEACHER_PROTECTED_ROUTES.some((route) =>

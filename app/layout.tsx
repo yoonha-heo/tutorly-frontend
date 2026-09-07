@@ -23,6 +23,12 @@ export default function RootLayout({
           >
             {children}
             <Toaster richColors position="bottom-center" />
+            <Toaster
+              id="chat-notifications"
+              position="top-right"
+              visibleToasts={3}
+              toastOptions={{ unstyled: true }}
+            />
           </GoogleOAuthProvider>
         </ReactQueryProvider>
       </body>

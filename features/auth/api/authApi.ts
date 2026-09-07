@@ -1,6 +1,7 @@
 import type { UserRole, Me } from "../types/auth.types";
 import { apiFetch } from "@/utils/apiClient";
 import { ApiError } from "@/utils/apiError";
+import { env } from "@/config/env";
 
 type LoginWithGoogleResponse = {
   user: Me;
@@ -8,7 +9,7 @@ type LoginWithGoogleResponse = {
 
 export async function loginWithGoogle(idToken: string, role: UserRole) {
   return apiFetch<LoginWithGoogleResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
+    `${env.apiUrl}/auth/google`,
     {
       method: "POST",
       headers: {
@@ -41,7 +42,7 @@ export async function getMe(): Promise<Me | null> {
 
   try {
     const data = await apiFetch<{ user: Me }>(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
+      `${env.apiUrl}/auth/me`,
       {
         headers,
         credentials: "include", // 클라이언트(브라우저) 환경 대응
@@ -61,7 +62,7 @@ export async function getMe(): Promise<Me | null> {
 
 export async function logout(): Promise<void> {
   await apiFetch<{ success: boolean }>(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+    `${env.apiUrl}/auth/logout`,
     {
       method: "POST",
       credentials: "include",
