@@ -19,7 +19,7 @@ export function ChatsClient({
   initialChannelId?: string;
 }) {
   const { data } = useChatList({ initialData: initialChats });
-  console.log('@@@ data', data)
+
   const markAsRead = useMarkChatAsRead();
   const setViewingChannelId = useSetViewingChannelId();
 
