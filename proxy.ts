@@ -12,14 +12,17 @@ const GUEST_ROUTES = ["/login", "/teachers/login"];
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
-  // JWT from HttpOnly cookie
-  const token = request.cookies.get("accessToken")?.value;
+  // JWT from HttpOnly cookies
+  const hasSession = Boolean(
+    request.cookies.get("accessToken")?.value ||
+      request.cookies.get("refreshToken")?.value,
+  );
 
   // login required (student and teacher)
   const isAuthRoute = AUTH_PROTECTED_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
-  if (isAuthRoute && !token) {
+  if (isAuthRoute && !hasSession) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
 
@@ -30,7 +33,7 @@ export function proxy(request: NextRequest) {
   const isTeacherRoute = TEACHER_PROTECTED_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
-  if (isTeacherRoute && !token) {
+  if (isTeacherRoute && !hasSession) {
     const loginUrl = new URL("/teachers/login", request.url);
     loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
 
@@ -41,7 +44,7 @@ export function proxy(request: NextRequest) {
   const isStudnetRoute = STUDENT_PROTECTED_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
-  if (isStudnetRoute && !token) {
+  if (isStudnetRoute && !hasSession) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
 
@@ -50,7 +53,7 @@ export function proxy(request: NextRequest) {
 
   // guest only page
   const isGuestRoute = GUEST_ROUTES.some((route) => pathname.startsWith(route));
-  if (isGuestRoute && token) {
+  if (isGuestRoute && hasSession) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
