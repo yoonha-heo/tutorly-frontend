@@ -7,6 +7,10 @@ import { ChatRoom } from "./ChatRoom";
 import { useChatList } from "../hooks/useChatList";
 import { useMarkChatAsRead } from "../hooks/useMarkChatAsRead";
 import { useSetViewingChannelId } from "./ChatSocketProvider";
+import {
+  useClearPendingChatOpen,
+  usePendingChatOpen,
+} from "./OpenChatContext";
 import type { ChatListResponse, MessageListResponse } from "../api/chats.api";
 
 export function ChatsClient({
@@ -22,6 +26,8 @@ export function ChatsClient({
 
   const markAsRead = useMarkChatAsRead();
   const setViewingChannelId = useSetViewingChannelId();
+  const pendingChatOpen = usePendingChatOpen();
+  const clearPendingChatOpen = useClearPendingChatOpen();
 
   const items = data?.items ?? initialChats.items;
   const [selectedId, setSelectedId] = useState(initialChannelId ?? "");
@@ -33,6 +39,15 @@ export function ChatsClient({
     setViewingChannelId(isListOpen ? undefined : selected?.id);
     return () => setViewingChannelId(undefined);
   }, [isListOpen, selected?.id, setViewingChannelId]);
+
+  useEffect(() => {
+    if (!pendingChatOpen) return;
+
+    setSelectedId(pendingChatOpen.channelId);
+    setIsListOpen(false);
+    markAsRead.mutate(pendingChatOpen.channelId);
+    clearPendingChatOpen();
+  }, [pendingChatOpen, markAsRead, clearPendingChatOpen]);
 
   function openConversation(id: string) {
     setSelectedId(id);

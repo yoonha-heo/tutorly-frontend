@@ -17,6 +17,7 @@ export function ChatAvatar({
       alt={alt}
       width={px}
       height={px}
+      priority={true}
       className={`shrink-0 rounded-xl object-cover ${size === "lg" ? "size-11" : "size-10"}`}
     />
   );

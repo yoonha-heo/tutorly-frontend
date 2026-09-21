@@ -40,11 +40,15 @@ export function useChatSocket(
       const isOwn = Boolean(myUserId) && message.senderId === myUserId;
       if (isOwn || viewingChannelId === message.channelId) return;
 
-      notifyIncomingChat(
-        message.type === "SYSTEM"
-          ? "Tutorly"
-          : (message.sender?.name ?? "Someone"),
-      );
+      notifyIncomingChat({
+        channelId: message.channelId,
+        senderName:
+          message.type === "SYSTEM"
+            ? "Tutorly"
+            : (message.sender?.name ?? "Someone"),
+        senderImage: message.sender?.profileImage ?? null,
+        preview: message.content,
+      });
     }
 
     socket.on("connect", joinRooms);
