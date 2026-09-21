@@ -10,6 +10,7 @@ export type Teacher = {
   averageRating: number;
   reviewCount: number;
   lessonCount: number;
+  rejectionReason: string | null;
 
   user: {
     id: string;

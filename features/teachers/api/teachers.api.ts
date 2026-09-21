@@ -103,6 +103,14 @@ export async function getTeachers(
   );
 }
 
+export async function getMyTeacherProfile(): Promise<Teacher> {
+  return apiFetch<Teacher>(`${env.apiUrl}/teachers/profile`, {
+    headers: await getAuthHeaders(),
+    credentials: "include",
+    cache: "no-store",
+  });
+}
+
 export async function getTeacher(id: string): Promise<Teacher> {
   return apiFetch<Teacher>(`${env.apiUrl}/teachers/${id}`, {
     headers: await getAuthHeaders(),

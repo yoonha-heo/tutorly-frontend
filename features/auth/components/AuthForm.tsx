@@ -31,6 +31,10 @@ export default function AuthForm({ title, description, role }: AuthFormProps) {
       return callbackUrl;
     }
 
+    if (user.role === "ADMIN") {
+      return "/admin";
+    }
+
     if (user.role === "TEACHER") {
       return "/teachers/dashboard";
     }

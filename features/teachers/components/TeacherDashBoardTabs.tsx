@@ -34,14 +34,22 @@ const TABS: { id: TabId; label: string; shortLabel: string; icon: typeof Calenda
 
 interface TeacherDashboardTabsProps {
   teacher: Teacher;
-  initialAvailabilities: MyAvailability[];
+  initialAvailabilities?: MyAvailability[];
+  profileOnly?: boolean;
 }
 
 export function TeacherDashboardTabs({
   teacher,
-  initialAvailabilities,
+  initialAvailabilities = [],
+  profileOnly = false,
 }: TeacherDashboardTabsProps) {
-  const [activeTab, setActiveTab] = useState<TabId>("availability");
+  const [activeTab, setActiveTab] = useState<TabId>(
+    profileOnly ? "profile" : "availability",
+  );
+
+  if (profileOnly) {
+    return <DashboardProfileEditor teacher={teacher} />;
+  }
 
   return (
     <div className="flex flex-col gap-6">

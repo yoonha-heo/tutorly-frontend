@@ -18,7 +18,7 @@ import {
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useChatList } from "@/features/chats/hooks/useChatList";
-import type { UserRole } from "@/features/auth/types/auth.types";
+import type { TeacherStatus, UserRole } from "@/features/auth/types/auth.types";
 
 export default function Header() {
   const { data: me, isLoading } = useMe();
@@ -114,6 +114,7 @@ export default function Header() {
                     pathname={pathname}
                     onClose={handleClose}
                     role={me.role}
+                    teacherStatus={me.teacherProfile?.status}
                   />
                   <div className="my-4 border-t border-border" />
                   <LogoutButton
@@ -154,6 +155,7 @@ export default function Header() {
                         pathname={pathname}
                         onClose={handleClose}
                         role={me.role}
+                        teacherStatus={me.teacherProfile?.status}
                         mobile
                       />
                       <div className="my-6 border-t border-border" />
@@ -182,11 +184,13 @@ function NavLinks({
   pathname,
   onClose,
   role,
+  teacherStatus,
   mobile = false,
 }: {
   pathname: string;
   onClose: () => void;
   role: UserRole;
+  teacherStatus?: TeacherStatus;
   mobile?: boolean;
 }) {
   const items =
@@ -197,13 +201,17 @@ function NavLinks({
             href: "/teachers/dashboard",
             icon: LayoutDashboard,
           },
-          { label: "Messages", href: "/chats", icon: MessageCircle },
+          ...(teacherStatus === "APPROVED"
+            ? [{ label: "Messages", href: "/chats", icon: MessageCircle }]
+            : []),
         ]
-      : [
-          { label: "Home", href: "/", icon: Home },
-          { label: "My lessons", href: "/lessons", icon: GraduationCap },
-          { label: "Messages", href: "/chats", icon: MessageCircle },
-        ];
+      : role === "ADMIN"
+        ? [{ label: "Admin", href: "/admin", icon: LayoutDashboard }]
+        : [
+            { label: "Home", href: "/", icon: Home },
+            { label: "My lessons", href: "/lessons", icon: GraduationCap },
+            { label: "Messages", href: "/chats", icon: MessageCircle },
+          ];
 
   const { data: chats } = useChatList();
   const hasUnread = (chats?.items ?? []).some((item) => item.unreadCount > 0);
