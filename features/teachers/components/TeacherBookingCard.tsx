@@ -4,7 +4,9 @@ import { CalendarDays, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
+import { useMe } from "@/features/auth/hooks/useMe";
 import type { Teacher } from "@/features/teachers/types/teachers";
+import { cn } from "@/utils/cn";
 
 interface TeacherBookingCardProps {
   teacher: Teacher;
@@ -25,8 +27,10 @@ const MessageModal = dynamic(
 );
 
 export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
+  const { data: me } = useMe();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const canBookLesson = me?.role !== "TEACHER";
 
   return (
     <>
@@ -50,28 +54,32 @@ export function TeacherBookingCard({ teacher }: TeacherBookingCardProps) {
           </div>
         </div>
 
-        {/* Booking Button */}
-        <button
-          type="button"
-          onClick={() => setIsBookingModalOpen(true)}
-          className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
-        >
-          <CalendarDays className="size-5" />
-          Book lesson
-        </button>
+        {canBookLesson && (
+          <button
+            type="button"
+            onClick={() => setIsBookingModalOpen(true)}
+            className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
+          >
+            <CalendarDays className="size-5" />
+            Book lesson
+          </button>
+        )}
 
         {/* Message Button */}
         <button
           type="button"
           onClick={() => setIsMessageModalOpen(true)}
-          className="mt-3 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 text-base font-semibold text-foreground transition-colors hover:bg-secondary"
+          className={cn(
+            "inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 text-base font-semibold text-foreground transition-colors hover:bg-secondary",
+            canBookLesson ? "mt-3" : "mt-6",
+          )}
         >
           <MessageCircle className="size-5" />
           Send a message
         </button>
       </aside>
 
-      {isBookingModalOpen && (
+      {canBookLesson && isBookingModalOpen && (
         <BookingModal
           teacher={teacher}
           isOpen={isBookingModalOpen}
