@@ -12,6 +12,7 @@ import {
   LogOut,
   ChevronDown,
   MessageCircle,
+  Star,
   X,
 } from "lucide-react";
 
@@ -208,6 +209,11 @@ function NavLinks({
                   href: "/teachers/lessons",
                   icon: GraduationCap,
                 },
+                {
+                  label: "My reviews",
+                  href: "/teachers/reviews",
+                  icon: Star,
+                },
                 { label: "Messages", href: "/chats", icon: MessageCircle },
               ]
             : []),
@@ -217,6 +223,7 @@ function NavLinks({
         : [
             { label: "Home", href: "/", icon: Home },
             { label: "My lessons", href: "/lessons", icon: GraduationCap },
+            { label: "My reviews", href: "/reviews", icon: Star },
             { label: "Messages", href: "/chats", icon: MessageCircle },
           ];
 

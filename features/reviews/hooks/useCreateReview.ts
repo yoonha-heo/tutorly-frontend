@@ -15,6 +15,8 @@ export function useCreateReview() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
       await queryClient.invalidateQueries({ queryKey: ["teacher-reviews"] });
+      await queryClient.invalidateQueries({ queryKey: ["my-reviews"] });
+      await queryClient.invalidateQueries({ queryKey: ["my-teaching-reviews"] });
       router.refresh();
       toast.success("Review submitted.");
     },

@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
 const AUTH_PROTECTED_ROUTES = ["/chats", "/admin"];
-const STUDENT_PROTECTED_ROUTES = ["/lessons", "/checkout"];
+const STUDENT_PROTECTED_ROUTES = ["/lessons", "/checkout", "/reviews"];
 const TEACHER_PROTECTED_ROUTES = [
   "/teachers/registration",
   "/teachers/dashboard",
   "/teachers/lessons",
+  "/teachers/reviews",
 ];
 const GUEST_ROUTES = ["/login", "/teachers/login"];
 
