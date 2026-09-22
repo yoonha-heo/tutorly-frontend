@@ -16,19 +16,30 @@ const LESSON_STATUS_FILTERS: {
   { label: "Completed", value: "COMPLETED" },
 ];
 
+export const TEACHING_LESSON_STATUS_FILTERS: {
+  label: string;
+  value: LessonFilter;
+}[] = [
+  { label: "All", value: "ALL" },
+  { label: "Upcoming", value: "CONFIRMED" },
+  { label: "Completed", value: "COMPLETED" },
+];
+
 interface LessonStatusFilterProps {
   selectedStatus: LessonFilter;
   onStatusChange: (status: LessonFilter) => void;
+  filters?: { label: string; value: LessonFilter }[];
 }
 
 export function LessonStatusFilter({
   selectedStatus,
   onStatusChange,
+  filters = LESSON_STATUS_FILTERS,
 }: LessonStatusFilterProps) {
   return (
     <div className="mt-8 overflow-x-auto">
       <div className="flex min-w-max gap-2">
-        {LESSON_STATUS_FILTERS.map((filter) => {
+        {filters.map((filter) => {
           const isSelected = selectedStatus === filter.value;
 
           return (

@@ -202,7 +202,14 @@ function NavLinks({
             icon: LayoutDashboard,
           },
           ...(teacherStatus === "APPROVED"
-            ? [{ label: "Messages", href: "/chats", icon: MessageCircle }]
+            ? [
+                {
+                  label: "My lessons",
+                  href: "/teachers/lessons",
+                  icon: GraduationCap,
+                },
+                { label: "Messages", href: "/chats", icon: MessageCircle },
+              ]
             : []),
         ]
       : role === "ADMIN"

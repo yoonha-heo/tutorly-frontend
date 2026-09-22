@@ -39,6 +39,32 @@ export type Booking = {
   review: { id: string } | null;
 };
 
+export type TeachingBookingStatus = Extract<
+  BookingStatus,
+  "CONFIRMED" | "COMPLETED"
+>;
+
+export type TeachingBooking = {
+  id: string;
+  teacherId: string;
+  studentId: string;
+  availabilityId: string;
+  lessonType: LessonType;
+  lessonStartAt: string;
+  lessonEndAt: string;
+  price: number;
+  status: TeachingBookingStatus;
+  meetingUrl: string | null;
+  paymentExpiresAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  student: {
+    id: string;
+    name: string | null;
+    profileImage: string | null;
+  };
+};
+
 export type CreateBookingData = {
   availabilityId: string;
   lessonType: LessonType;
@@ -52,6 +78,12 @@ export async function createBooking(data: CreateBookingData) {
     },
     credentials: "include",
     body: JSON.stringify(data),
+  });
+}
+
+export async function getMyTeachingBookings(): Promise<TeachingBooking[]> {
+  return apiFetch<TeachingBooking[]>(`${env.apiUrl}/bookings/teaching`, {
+    credentials: "include",
   });
 }
 
