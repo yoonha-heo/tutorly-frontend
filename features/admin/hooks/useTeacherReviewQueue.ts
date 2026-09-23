@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 
-import type { AdminTeacherListResponse } from "../types/admin";
 import { usePendingTeachers } from "./usePendingTeachers";
 
-export function useTeacherReviewQueue(initialData: AdminTeacherListResponse) {
-  const { data } = usePendingTeachers(initialData);
+export function useTeacherReviewQueue(enabled: boolean) {
+  const { data, isPending, isError } = usePendingTeachers(enabled);
   const [index, setIndex] = useState(0);
 
   const items = data?.items ?? [];
@@ -31,5 +30,7 @@ export function useTeacherReviewQueue(initialData: AdminTeacherListResponse) {
     hasNext: currentIndex < totalCount - 1,
     goToPrevious,
     goToNext,
+    isPending,
+    isError,
   };
 }

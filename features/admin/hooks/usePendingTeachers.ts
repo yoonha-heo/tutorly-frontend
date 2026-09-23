@@ -3,12 +3,11 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getPendingTeachers } from "../api/admin.api";
-import type { AdminTeacherListResponse } from "../types/admin";
 
-export function usePendingTeachers(initialData: AdminTeacherListResponse) {
+export function usePendingTeachers(enabled: boolean) {
   return useQuery({
     queryKey: ["admin", "pending-teachers"],
     queryFn: getPendingTeachers,
-    initialData,
+    enabled,
   });
 }

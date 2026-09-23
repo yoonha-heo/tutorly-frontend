@@ -8,22 +8,6 @@ import type {
 
 const PENDING_PAGE_SIZE = 50;
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  const headers: Record<string, string> = {};
-
-  if (typeof window === "undefined") {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const cookieString = cookieStore.toString();
-
-    if (cookieString) {
-      headers.Cookie = cookieString;
-    }
-  }
-
-  return headers;
-}
-
 export async function getPendingTeachers(): Promise<AdminTeacherListResponse> {
   const searchParams = new URLSearchParams({
     status: "PENDING",
@@ -34,7 +18,6 @@ export async function getPendingTeachers(): Promise<AdminTeacherListResponse> {
   return apiFetch<AdminTeacherListResponse>(
     `${env.apiUrl}/admin/teachers?${searchParams.toString()}`,
     {
-      headers: await getAuthHeaders(),
       credentials: "include",
       cache: "no-store",
     },

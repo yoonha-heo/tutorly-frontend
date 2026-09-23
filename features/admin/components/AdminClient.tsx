@@ -3,23 +3,18 @@
 import { useState } from "react";
 
 import { useLogout } from "@/features/auth/hooks/useLogout";
-import type { Me } from "@/features/auth/types/auth.types";
 
+import { useAdminAccess } from "../hooks/useAdminAccess";
 import { useReviewTeacher } from "../hooks/useReviewTeacher";
 import { useTeacherReviewQueue } from "../hooks/useTeacherReviewQueue";
-import type { AdminTeacherListResponse } from "../types/admin";
 import {
   AdminFeatureList,
   type AdminFeature,
 } from "./AdminFeatureList";
 import { TeacherReviewPanel } from "./TeacherReviewPanel";
 
-type AdminClientProps = {
-  me: Me;
-  initialTeachers: AdminTeacherListResponse;
-};
-
-export function AdminClient({ me, initialTeachers }: AdminClientProps) {
+export function AdminClient() {
+  const { canLoad, me } = useAdminAccess();
   const [selectedFeature, setSelectedFeature] =
     useState<AdminFeature>("teacher-review");
   const logoutMutation = useLogout();
@@ -32,9 +27,28 @@ export function AdminClient({ me, initialTeachers }: AdminClientProps) {
     hasNext,
     goToPrevious,
     goToNext,
-  } = useTeacherReviewQueue(initialTeachers);
+    isPending,
+    isError,
+  } = useTeacherReviewQueue(canLoad);
   const { approveTeacher, rejectTeacher, isApproving, isRejecting } =
     useReviewTeacher();
+
+  if (!canLoad || isPending) {
+    return <AdminSkeleton />;
+  }
+
+  if (isError || !me) {
+    return (
+      <main className="mx-auto max-w-3xl px-4 py-16 text-center">
+        <h1 className="text-xl font-semibold text-foreground">
+          Could not load the admin queue
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Please try again in a moment.
+        </p>
+      </main>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background md:flex-row">
@@ -71,6 +85,32 @@ export function AdminClient({ me, initialTeachers }: AdminClientProps) {
             isRejecting={isRejecting}
           />
         )}
+      </main>
+    </div>
+  );
+}
+
+function AdminSkeleton() {
+  return (
+    <div
+      className="flex min-h-screen flex-col bg-background md:flex-row"
+      aria-label="Loading admin"
+    >
+      <aside className="w-full border-b border-border md:w-64 md:border-r md:border-b-0">
+        <div className="border-b border-border px-5 py-4">
+          <div className="h-3 w-12 animate-pulse rounded bg-secondary" />
+          <div className="mt-2 h-6 w-20 animate-pulse rounded bg-secondary" />
+        </div>
+        <div className="p-3">
+          <div className="h-16 animate-pulse rounded-xl bg-secondary/50" />
+        </div>
+      </aside>
+      <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8">
+        <div className="mx-auto w-full max-w-3xl">
+          <div className="h-7 w-56 animate-pulse rounded bg-secondary" />
+          <div className="mt-2 h-4 w-40 animate-pulse rounded bg-secondary" />
+          <div className="mt-8 h-96 animate-pulse rounded-2xl border border-border bg-secondary/50" />
+        </div>
       </main>
     </div>
   );
