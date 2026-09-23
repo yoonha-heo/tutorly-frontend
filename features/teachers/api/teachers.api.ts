@@ -105,7 +105,6 @@ export async function getTeachers(
 
 export async function getMyTeacherProfile(): Promise<Teacher> {
   return apiFetch<Teacher>(`${env.apiUrl}/teachers/profile`, {
-    headers: await getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -132,7 +131,6 @@ export async function getTeacherAvailabilities(
 
 export async function getMyAvailabilities(): Promise<MyAvailability[]> {
   return apiFetch<MyAvailability[]>(`${env.apiUrl}/availabilities/me`, {
-    headers: await getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });

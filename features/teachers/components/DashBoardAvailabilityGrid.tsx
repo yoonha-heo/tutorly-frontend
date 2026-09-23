@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight, Lock } from "lucide-react";
 import { memo, useMemo, useState } from "react";
 
 import { useAvailabilityGrid } from "@/features/teachers/hooks/useAvailabilityGrid";
-import type { MyAvailability } from "@/features/teachers/types/teachers";
 import {
   getAvailabilityStatus,
   getDayAvailabilities,
@@ -25,11 +24,7 @@ const dayToggleButtonClass =
 const weekNavButtonClass =
   "flex size-9 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:cursor-not-allowed disabled:text-muted-foreground/40 disabled:hover:bg-transparent disabled:hover:text-muted-foreground/40";
 
-export function DashboardAvailabilityGrid({
-  initialAvailabilities,
-}: {
-  initialAvailabilities?: MyAvailability[];
-}) {
+export function DashboardAvailabilityGrid() {
   const {
     availabilities,
     changes,
@@ -49,7 +44,17 @@ export function DashboardAvailabilityGrid({
     handleReset,
     isSaveError,
     isSavePending,
-  } = useAvailabilityGrid(initialAvailabilities);
+    isPending,
+  } = useAvailabilityGrid();
+
+  if (isPending) {
+    return (
+      <div
+        className="h-96 animate-pulse rounded-2xl bg-secondary/50"
+        aria-label="Loading schedule"
+      />
+    );
+  }
 
   if (availabilities.length === 0) {
     return (

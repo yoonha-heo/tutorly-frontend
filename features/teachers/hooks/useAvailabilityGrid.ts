@@ -19,12 +19,8 @@ import {
 } from "@/utils/availabilities";
 import { createLocalDateKey } from "@/utils/localDateTime";
 
-export function useAvailabilityGrid(
-  initialAvailabilities?: MyAvailability[],
-) {
-  const { data } = useMyAvailabilities({
-    initialData: initialAvailabilities,
-  });
+export function useAvailabilityGrid() {
+  const { data, isPending } = useMyAvailabilities();
   const {
     mutate: saveAvailabilities,
     isPending: isSavePending,
@@ -159,5 +155,6 @@ export function useAvailabilityGrid(
     handleReset,
     isSaveError,
     isSavePending,
+    isPending,
   };
 }

@@ -13,6 +13,7 @@ export function useUpdateTeacherProfile(teacherId: string) {
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["teacher", teacherId] }),
+        queryClient.invalidateQueries({ queryKey: ["my-teacher-profile"] }),
         queryClient.invalidateQueries({ queryKey: ["me"] }),
       ]);
     },

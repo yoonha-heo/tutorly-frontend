@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Calendar, UserPen } from "lucide-react";
 
 import { DashboardAvailabilityGrid } from "@/features/teachers/components/DashBoardAvailabilityGrid";
-import type { MyAvailability, Teacher } from "@/features/teachers/types/teachers";
+import type { Teacher } from "@/features/teachers/types/teachers";
 
 const DashboardProfileEditor = dynamic(
   () =>
@@ -34,13 +34,11 @@ const TABS: { id: TabId; label: string; shortLabel: string; icon: typeof Calenda
 
 interface TeacherDashboardTabsProps {
   teacher: Teacher;
-  initialAvailabilities?: MyAvailability[];
   profileOnly?: boolean;
 }
 
 export function TeacherDashboardTabs({
   teacher,
-  initialAvailabilities = [],
   profileOnly = false,
 }: TeacherDashboardTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>(
@@ -93,9 +91,7 @@ export function TeacherDashboardTabs({
       >
         {activeTab === "availability" && (
           <section className="rounded-3xl border border-border bg-background p-5 sm:p-8">
-            <DashboardAvailabilityGrid
-              initialAvailabilities={initialAvailabilities}
-            />
+            <DashboardAvailabilityGrid />
           </section>
         )}
       </div>
