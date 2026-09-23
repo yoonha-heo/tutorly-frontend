@@ -1,22 +1,22 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { LessonStatusFilter, type LessonFilter } from "./LessonStatusFilter";
 import { LessonCard } from "./LessonCard";
 import { LessonsEmptyState } from "./LessonStates";
 import type { Booking } from "../api/bookings.api";
 
 interface Props {
-  initialBookings: Booking[];
+  bookings: Booking[];
 }
 
-export function LessonListContainer({ initialBookings }: Props) {
+export function LessonListContainer({ bookings }: Props) {
   const [selectedStatus, setSelectedStatus] = useState<LessonFilter>("ALL");
 
-  const filteredBookings = useMemo(() => {
-    if (selectedStatus === "ALL") return initialBookings;
-    return initialBookings.filter((b) => b.status === selectedStatus);
-  }, [selectedStatus, initialBookings]);
+  const filteredBookings =
+    selectedStatus === "ALL"
+      ? bookings
+      : bookings.filter((booking) => booking.status === selectedStatus);
 
   return (
     <>
