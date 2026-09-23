@@ -96,7 +96,6 @@ export async function getMyReviews(
   return apiFetch<WrittenReviewListResponse>(
     `${env.apiUrl}/reviews/me?${toReviewQuery(params, MY_REVIEWS_PAGE_SIZE)}`,
     {
-      headers: await getAuthHeaders(),
       credentials: "include",
       cache: "no-store",
     },
@@ -125,18 +124,3 @@ function toReviewQuery(
   return searchParams.toString();
 }
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  const headers: Record<string, string> = {};
-
-  if (typeof window === "undefined") {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const cookieString = cookieStore.toString();
-
-    if (cookieString) {
-      headers["Cookie"] = cookieString;
-    }
-  }
-
-  return headers;
-}
