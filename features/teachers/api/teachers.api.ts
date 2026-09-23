@@ -72,13 +72,13 @@ export async function submitTeacherProfile(data: TeacherRegisterValues) {
 
 export async function getAvailableLanguages(): Promise<Languages[]> {
   return apiFetch<Languages[]>(`${env.apiUrl}/teachers/languages`, {
-    credentials: "include",
+    credentials: "omit",
   });
 }
 
 export async function getAvailableSpecialties(): Promise<Specialties[]> {
   return apiFetch<Specialties[]>(`${env.apiUrl}/teachers/specialties`, {
-    credentials: "include",
+    credentials: "omit",
   });
 }
 
@@ -98,7 +98,7 @@ export async function getTeachers(
   return apiFetch<TeacherListResponse>(
     `${env.apiUrl}/teachers?${queryString ? `${queryString}` : ""}`,
     {
-      credentials: "include",
+      credentials: "omit",
     },
   );
 }
@@ -112,8 +112,7 @@ export async function getMyTeacherProfile(): Promise<Teacher> {
 
 export async function getTeacher(id: string): Promise<Teacher> {
   return apiFetch<Teacher>(`${env.apiUrl}/teachers/${id}`, {
-    headers: await getAuthHeaders(),
-    credentials: "include",
+    credentials: "omit",
     cache: "no-store",
   });
 }
@@ -124,7 +123,7 @@ export async function getTeacherAvailabilities(
   return apiFetch<TeacherAvailability[]>(
     `${env.apiUrl}/teachers/${teacherId}/availabilities`,
     {
-      credentials: "include",
+      credentials: "omit",
     },
   );
 }

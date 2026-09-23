@@ -84,7 +84,7 @@ export async function getTeacherReviews(
   return apiFetch<TeacherReviewListResponse>(
     `${env.apiUrl}/reviews/teacher/${teacherId}?${toReviewQuery(params)}`,
     {
-      credentials: "include",
+      credentials: "omit",
       cache: "no-store",
     },
   );
@@ -123,4 +123,3 @@ function toReviewQuery(
   searchParams.set("limit", String(params.limit ?? defaultLimit));
   return searchParams.toString();
 }
-
