@@ -1,22 +1,13 @@
-import { notFound } from "next/navigation";
-
-import { getMyBookings } from "@/features/bookings/api/bookings.api";
-import { CheckoutClient } from "@/features/payments/components/CheckoutClient";
+import { CheckoutPageClient } from "@/features/payments/components/CheckoutPageClient";
 
 interface CheckoutPageProps {
-    params: Promise<{
-        id: string;
-    }>;
+  params: Promise<{
+    id: string;
+  }>;
 }
 
 export default async function CheckoutPage({ params }: CheckoutPageProps) {
-    const { id } = await params;
-    const bookings = await getMyBookings();
-    const booking = bookings.find((item) => item.id === id);
+  const { id } = await params;
 
-    if (!booking) {
-        notFound();
-    }
-
-    return <CheckoutClient booking={booking} />;
+  return <CheckoutPageClient bookingId={id} />;
 }

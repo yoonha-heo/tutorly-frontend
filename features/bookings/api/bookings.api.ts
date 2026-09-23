@@ -88,22 +88,7 @@ export async function getMyTeachingBookings(): Promise<TeachingBooking[]> {
 }
 
 export async function getMyBookings(): Promise<Booking[]> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-
-  if (typeof window === "undefined") {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const cookieString = cookieStore.toString();
-
-    if (cookieString) {
-      headers["Cookie"] = cookieString;
-    }
-  }
-
   return apiFetch<Booking[]>(`${env.apiUrl}/bookings/me`, {
-    headers,
     credentials: "include",
     cache: "no-store",
   });
