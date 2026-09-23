@@ -2,14 +2,13 @@ import { useEffect, useRef } from "react";
 
 import { useMarkChatAsRead } from "./useMarkChatAsRead";
 import { useMessageList } from "./useMessageList";
-import type { MessageListResponse } from "../api/chats.api";
 
 export function useChatMessages(
   channelId: string,
-  options: { initialMessages?: MessageListResponse; isListOpen: boolean },
+  options: { isListOpen: boolean },
 ) {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useMessageList(channelId, { initialData: options.initialMessages });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
+    useMessageList(channelId);
   const markAsRead = useMarkChatAsRead();
   const seenMessageIdRef = useRef<string | undefined>(undefined);
 
@@ -42,5 +41,6 @@ export function useChatMessages(
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isPending,
   };
 }

@@ -1,15 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import {
-  getMessageList,
-  MESSAGE_PAGE_SIZE,
-  type MessageListResponse,
-} from "../api/chats.api";
+import { getMessageList, MESSAGE_PAGE_SIZE } from "../api/chats.api";
 
-export function useMessageList(
-  channelId: string,
-  options?: { initialData?: MessageListResponse },
-) {
+export function useMessageList(channelId: string) {
   return useInfiniteQuery({
     queryKey: ["chat-messages", channelId],
     queryFn: ({ pageParam }) =>
@@ -21,11 +14,5 @@ export function useMessageList(
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? (lastPage.nextCursor ?? undefined) : undefined,
     enabled: Boolean(channelId),
-    initialData: options?.initialData
-      ? {
-          pages: [options.initialData],
-          pageParams: [undefined],
-        }
-      : undefined,
   });
 }

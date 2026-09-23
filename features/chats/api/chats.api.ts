@@ -41,27 +41,8 @@ export type SendChatData = {
   content: string;
 };
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-
-  if (typeof window === "undefined") {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const cookieString = cookieStore.toString();
-
-    if (cookieString) {
-      headers["Cookie"] = cookieString;
-    }
-  }
-
-  return headers;
-}
-
 export async function getChatList(): Promise<ChatListResponse> {
   return apiFetch<ChatListResponse>(`${env.apiUrl}/chats`, {
-    headers: await getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -81,7 +62,6 @@ export async function getMessageList(
   return apiFetch<MessageListResponse>(
     `${env.apiUrl}/chats/${channelId}/messages?${searchParams.toString()}`,
     {
-      headers: await getAuthHeaders(),
       credentials: "include",
       cache: "no-store",
     },

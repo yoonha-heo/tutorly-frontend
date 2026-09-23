@@ -8,7 +8,7 @@ import { MessageInput } from "./MessageInput";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useChatRoomScroll } from "../hooks/useChatRoomScroll";
 import { useChatInput } from "../hooks/useChatInput";
-import type { ChatListItem, MessageListResponse } from "../api/chats.api";
+import type { ChatListItem } from "../api/chats.api";
 
 const EMPTY_PROFILE = "/images/empty-profile.png";
 
@@ -16,12 +16,10 @@ export function ChatRoom({
   channel,
   isListOpen,
   onBack,
-  initialMessages,
 }: {
   channel: ChatListItem;
   isListOpen: boolean;
   onBack: () => void;
-  initialMessages?: MessageListResponse;
 }) {
   const { data: me } = useMe();
   const {
@@ -31,7 +29,8 @@ export function ChatRoom({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useChatMessages(channel.id, { initialMessages, isListOpen });
+    isPending,
+  } = useChatMessages(channel.id, { isListOpen });
   const { scrollerRef, loadOlderRef } = useChatRoomScroll({
     channelId: channel.id,
     isListOpen,
@@ -67,13 +66,20 @@ export function ChatRoom({
         avatarSrc={channel.otherUser?.profileImage ?? EMPTY_PROFILE}
         onBack={onBack}
       />
-      <MessageList
-        scrollerRef={scrollerRef}
-        loadOlderRef={loadOlderRef}
-        isFetchingNextPage={isFetchingNextPage}
-        messages={messages}
-        myUserId={me?.id}
-      />
+      {isPending ? (
+        <div
+          className="min-h-0 flex-1 bg-secondary/40 px-4 py-6 sm:px-8"
+          aria-label="Loading messages"
+        />
+      ) : (
+        <MessageList
+          scrollerRef={scrollerRef}
+          loadOlderRef={loadOlderRef}
+          isFetchingNextPage={isFetchingNextPage}
+          messages={messages}
+          myUserId={me?.id}
+        />
+      )}
       <MessageInput
         draft={draft}
         setDraft={setDraft}

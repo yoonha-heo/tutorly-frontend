@@ -1,15 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getChatList, type ChatListResponse } from "../api/chats.api";
+import { getChatList } from "../api/chats.api";
 
-export function useChatList(options?: {
-  initialData?: ChatListResponse;
-  enabled?: boolean;
-}) {
+export function useChatList(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ["chats"],
     queryFn: getChatList,
-    initialData: options?.initialData,
     enabled: options?.enabled ?? true,
   });
 }
