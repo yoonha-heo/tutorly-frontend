@@ -1,14 +1,12 @@
-import type { UserRole, Me } from "../types/auth.types";
+import type { Me, SignupRole } from "../types/auth.types";
 import { apiFetch } from "@/utils/apiClient";
 import { ApiError } from "@/utils/apiError";
 import { env } from "@/config/env";
 
-type LoginWithGoogleResponse = {
-  user: Me;
-};
+export type GoogleLoginResponse = { needsRole: true } | { user: Me };
 
-export async function loginWithGoogle(idToken: string, role: UserRole) {
-  return apiFetch<LoginWithGoogleResponse>(
+export async function loginWithGoogle(idToken: string, role?: SignupRole) {
+  return apiFetch<GoogleLoginResponse>(
     `${env.apiUrl}/auth/google`,
     {
       method: "POST",
@@ -18,7 +16,7 @@ export async function loginWithGoogle(idToken: string, role: UserRole) {
       credentials: "include",
       body: JSON.stringify({
         idToken,
-        role,
+        ...(role ? { role } : {}),
       }),
     },
   );

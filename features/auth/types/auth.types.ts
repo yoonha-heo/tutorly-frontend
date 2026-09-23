@@ -1,5 +1,7 @@
 export type UserRole = "STUDENT" | "TEACHER" | "ADMIN";
 
+export type SignupRole = Exclude<UserRole, "ADMIN">;
+
 export type TeacherStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export type TeacherProfileSummary = {

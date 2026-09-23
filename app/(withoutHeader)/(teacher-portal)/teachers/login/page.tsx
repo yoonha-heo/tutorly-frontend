@@ -1,11 +1,20 @@
-import AuthForm from "@/features/auth/components/AuthForm";
+import { redirect } from "next/navigation";
 
-export default function TeacherLoginPage() {
-  return (
-    <AuthForm
-      title="Become a tutor"
-      description="Sign in with Google to create your tutor account."
-      role="TEACHER"
-    />
-  );
+type TeacherLoginPageProps = {
+  searchParams: Promise<{
+    callbackUrl?: string;
+  }>;
+};
+
+export default async function TeacherLoginPage({
+  searchParams,
+}: TeacherLoginPageProps) {
+  const { callbackUrl } = await searchParams;
+  const params = new URLSearchParams({ intent: "teacher" });
+
+  if (callbackUrl) {
+    params.set("callbackUrl", callbackUrl);
+  }
+
+  redirect(`/login?${params.toString()}`);
 }

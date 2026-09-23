@@ -1,11 +1,15 @@
 import AuthForm from "@/features/auth/components/AuthForm";
 
-export default function LoginPage() {
+type LoginPageProps = {
+  searchParams: Promise<{
+    intent?: string;
+  }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const { intent } = await searchParams;
+
   return (
-    <AuthForm
-      title="Welcome back"
-      description="Sign in with Google to start booking lessons."
-      role="STUDENT"
-    />
+    <AuthForm initialRole={intent === "teacher" ? "TEACHER" : "STUDENT"} />
   );
 }

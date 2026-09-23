@@ -36,7 +36,8 @@ export function proxy(request: NextRequest) {
     pathname.startsWith(route),
   );
   if (isTeacherRoute && !hasSession) {
-    const loginUrl = new URL("/teachers/login", request.url);
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("intent", "teacher");
     loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
 
     return NextResponse.redirect(loginUrl);

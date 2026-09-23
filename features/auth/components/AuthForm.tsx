@@ -4,61 +4,74 @@ import { GoogleLogin } from "@react-oauth/google";
 import { GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { loginWithGoogle } from "@/features/auth/api/authApi";
-import type { Me, UserRole } from "@/features/auth/types/auth.types";
+import { getLoginRedirectPath } from "@/features/auth/lib/getLoginRedirectPath";
+import type { Me, SignupRole } from "@/features/auth/types/auth.types";
+import { ROLE_OPTIONS, RoleOption } from "./RoleOption";
 
 type AuthFormProps = {
-  title: string;
-  description: string;
-  role: UserRole;
+  initialRole: SignupRole;
 };
 
-export default function AuthForm({ title, description, role }: AuthFormProps) {
+export default function AuthForm({ initialRole }: AuthFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [role, setRole] = useState<SignupRole>(initialRole);
+  const [idToken, setIdToken] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function getLoginRedirectPath(user: Me) {
-    if (user.role === "TEACHER" && !user.teacherProfile) {
-      return "/teachers/registration";
-    }
-
-    const searchParams = new URLSearchParams(window.location.search);
-    const callbackUrl = searchParams.get("callbackUrl");
-
-    if (callbackUrl) {
-      return callbackUrl;
-    }
-
-    if (user.role === "ADMIN") {
-      return "/admin";
-    }
-
-    if (user.role === "TEACHER") {
-      return "/teachers/dashboard";
-    }
-    
-    return "/";
+  function completeLogin(user: Me, isNewAccount = false) {
+    queryClient.setQueryData(["me"], user);
+    router.replace(
+      isNewAccount && user.role === "STUDENT"
+        ? "/teachers"
+        : getLoginRedirectPath(user),
+    );
   }
 
   async function handleGoogleLoginSuccess(credential?: string) {
-    if (!credential) return;
+    if (!credential || isSubmitting) return;
+
+    setIsSubmitting(true);
 
     try {
-      const { user } = await loginWithGoogle(credential, role);
+      const result = await loginWithGoogle(credential);
 
-      queryClient.setQueryData(["me"], user);
+      if ("user" in result) {
+        completeLogin(result.user);
+        return;
+      }
 
-      router.replace(getLoginRedirectPath(user));
+      setIdToken(credential);
     } catch (error) {
       console.error("Google login failed", error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
-  function handleGoogleLoginError() {
-    console.error("Google login failed");
+  async function handleCreateAccount() {
+    if (!idToken || isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await loginWithGoogle(idToken, role);
+
+      if ("user" in result) {
+        completeLogin(result.user, true);
+      }
+    } catch (error) {
+      console.error("Google login failed", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
+
+  const isNewAccount = idToken !== null;
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6">
@@ -67,31 +80,62 @@ export default function AuthForm({ title, description, role }: AuthFormProps) {
           <div className="flex size-11 items-center justify-center rounded-xl bg-primary">
             <GraduationCap className="size-5 text-primary-foreground" />
           </div>
-
           <span className="text-2xl font-bold tracking-tight">Tutorly</span>
         </Link>
 
         <div className="mt-10">
-          <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-
+          <h1 className="text-3xl font-bold tracking-tight">
+            {isNewAccount ? "Choose your role" : "Sign in"}
+          </h1>
           <p className="mt-3 text-base leading-7 text-muted-foreground">
-            {description}
+            {isNewAccount
+              ? "This choice is saved with your new account."
+              : "Sign in with Google to continue."}
           </p>
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <GoogleLogin
-            theme="outline"
-            size="large"
-            shape="rectangular"
-            text="continue_with"
-            width="360"
-            onSuccess={({ credential }) => {
-              handleGoogleLoginSuccess(credential);
-            }}
-            onError={handleGoogleLoginError}
-          />
-        </div>
+        {isNewAccount ? (
+          <>
+            <div
+              role="radiogroup"
+              aria-label="Choose your role"
+              className="mt-8 grid gap-3"
+            >
+              {ROLE_OPTIONS.map((option) => (
+                <RoleOption
+                  key={option.role}
+                  option={option}
+                  selected={role === option.role}
+                  onSelect={setRole}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={handleCreateAccount}
+              disabled={isSubmitting}
+              className="mt-8 inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Create account
+            </button>
+          </>
+        ) : (
+          <div className="mt-10 flex justify-center">
+            <GoogleLogin
+              theme="outline"
+              size="large"
+              shape="rectangular"
+              text="continue_with"
+              width="360"
+              onSuccess={({ credential }) => {
+                handleGoogleLoginSuccess(credential);
+              }}
+              onError={() => {
+                console.error("Google login failed");
+              }}
+            />
+          </div>
+        )}
       </section>
     </main>
   );

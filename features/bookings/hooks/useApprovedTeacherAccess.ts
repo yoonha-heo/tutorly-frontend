@@ -18,7 +18,9 @@ export function useApprovedTeacherAccess(
     if (isPending) return;
 
     if (!me) {
-      router.replace(`/teachers/login?callbackUrl=${callbackUrl}`);
+      router.replace(
+        `/login?intent=teacher&callbackUrl=${encodeURIComponent(callbackUrl)}`,
+      );
       return;
     }
 

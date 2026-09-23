@@ -65,7 +65,7 @@ export default function Header() {
 
             {!isLoading && !me && (
               <Link
-                href="/teachers/login"
+                href="/login?intent=teacher"
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 Become a tutor

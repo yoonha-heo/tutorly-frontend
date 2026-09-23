@@ -27,7 +27,7 @@ export default function Footer() {
               <Link href="/teachers">Find a tutor</Link>
             </li>
             <li>
-              <Link href="/">Become a tutor</Link>
+              <Link href="/login?intent=teacher">Become a tutor</Link>
             </li>
           </ul>
         </div>
