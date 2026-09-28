@@ -24,12 +24,12 @@ export function getAvailabilitySlotKey(availability: MyAvailability): string {
   return `${createLocalDateKey(availability.startAt)}_${formatAvailabilityTime(availability.startAt)}`;
 }
 
-/** Returns the Monday of the ISO week that contains `date`. */
-export function getWeekStart(date: Date): Date {
+/** Matches backend `SLOT_LOOKAHEAD_DAYS` in the availability cron. */
+export const BOOKABLE_DAY_COUNT = 14;
+export const BOOKABLE_PAGE_SIZE = 7;
+
+export function startOfDay(date: Date): Date {
   const d = new Date(date);
-  const day = d.getDay();
-  const diff = (day === 0 ? -6 : 1) - day;
-  d.setDate(d.getDate() + diff);
   d.setHours(0, 0, 0, 0);
   return d;
 }
@@ -40,15 +40,24 @@ export function addDays(date: Date, n: number): Date {
   return d;
 }
 
+/** Today through the next 13 days, the same window the slot cron generates. */
+export function getBookableDates(now = new Date()): Date[] {
+  const start = startOfDay(now);
+  return Array.from({ length: BOOKABLE_DAY_COUNT }, (_, offset) =>
+    addDays(start, offset),
+  );
+}
+
+export function getBookablePage(dates: Date[], pageIndex: number): Date[] {
+  const start = pageIndex * BOOKABLE_PAGE_SIZE;
+  return dates.slice(start, start + BOOKABLE_PAGE_SIZE);
+}
+
 export function toISODate(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
-}
-
-export function getWeekDates(weekStart: Date): Date[] {
-  return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 }
 
 export function buildAvailabilityMap(
@@ -107,19 +116,6 @@ export function hasOpenSlotsForDay(
     (availability) =>
       !isReservedAvailability(availability) && availability.isOpen,
   );
-}
-
-export function weekHasSlots(
-  existingDateKeysSet: Set<string>,
-  weekStart: Date,
-): boolean {
-  const weekDates = getWeekDates(weekStart);
-  for (let i = 0; i < weekDates.length; i++) {
-    if (existingDateKeysSet.has(toISODate(weekDates[i]))) {
-      return true;
-    }
-  }
-  return false;
 }
 
 export function getAvailabilityChanges(

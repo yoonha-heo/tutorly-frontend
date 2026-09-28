@@ -6,16 +6,15 @@ import { useMyAvailabilities } from "@/features/teachers/hooks/useMyAvailabiliti
 import { useSaveAvailabilities } from "@/features/teachers/hooks/useSaveAvailabilities";
 import type { MyAvailability } from "@/features/teachers/types/teachers";
 import {
-  addDays,
+  BOOKABLE_PAGE_SIZE,
   buildAvailabilityMap,
   formatWeekRange,
   getAvailabilityChanges,
+  getBookableDates,
+  getBookablePage,
   getUniqueTimeSlots,
-  getWeekDates,
-  getWeekStart,
   isReservedAvailability,
   toISODate,
-  weekHasSlots,
 } from "@/utils/availabilities";
 import { createLocalDateKey } from "@/utils/localDateTime";
 
@@ -34,7 +33,11 @@ export function useAvailabilityGrid() {
   const [draftAvailabilities, setDraftAvailabilities] = useState<
     MyAvailability[] | null
   >(null);
-  const [weekStart, setWeekStart] = useState(() => getWeekStart(new Date()));
+  const [bookableDates] = useState(() => getBookableDates());
+  const [pageIndex, setPageIndex] = useState(0);
+  const [selectedDateKey, setSelectedDateKey] = useState(() =>
+    toISODate(bookableDates[0]),
+  );
 
   const availabilities = draftAvailabilities ?? serverAvailabilities;
 
@@ -45,9 +48,15 @@ export function useAvailabilityGrid() {
 
   const isDirty = changes.length > 0;
 
-  const weekDates = useMemo(() => getWeekDates(weekStart), [weekStart]);
-  const weekEnd = addDays(weekStart, 6);
-  const weekRangeLabel = formatWeekRange(weekStart, weekEnd);
+  const pageCount = Math.ceil(bookableDates.length / BOOKABLE_PAGE_SIZE);
+  const weekDates = useMemo(
+    () => getBookablePage(bookableDates, pageIndex),
+    [bookableDates, pageIndex],
+  );
+  const weekRangeLabel = formatWeekRange(
+    weekDates[0],
+    weekDates[weekDates.length - 1],
+  );
 
   const visibleDates = useMemo(
     () => new Set(weekDates.map(toISODate)),
@@ -64,23 +73,8 @@ export function useAvailabilityGrid() {
     [serverAvailabilities, visibleDates],
   );
 
-  const allExistingDateKeys = useMemo(() => {
-    const set = new Set<string>();
-    for (const a of serverAvailabilities) {
-      set.add(createLocalDateKey(a.startAt));
-    }
-    return set;
-  }, [serverAvailabilities]);
-
-  const canGoPrevWeek = useMemo(
-    () => weekHasSlots(allExistingDateKeys, addDays(weekStart, -7)),
-    [allExistingDateKeys, weekStart],
-  );
-
-  const canGoNextWeek = useMemo(
-    () => weekHasSlots(allExistingDateKeys, addDays(weekStart, 7)),
-    [allExistingDateKeys, weekStart],
-  );
+  const canGoPrevWeek = pageIndex > 0;
+  const canGoNextWeek = pageIndex < pageCount - 1;
 
   const handleToggle = useCallback((availabilityId: string) => {
     setDraftAvailabilities((prev) => {
@@ -110,16 +104,31 @@ export function useAvailabilityGrid() {
     });
   }, []);
 
+  const goToPage = useCallback(
+    (nextIndex: number) => {
+      const clamped = Math.min(Math.max(nextIndex, 0), pageCount - 1);
+      const page = getBookablePage(bookableDates, clamped);
+      setPageIndex(clamped);
+      setSelectedDateKey(toISODate(page[0]));
+    },
+    [bookableDates, pageCount],
+  );
+
   const goToPrevWeek = useCallback(() => {
-    setWeekStart((prev) => addDays(prev, -7));
-  }, []);
+    goToPage(pageIndex - 1);
+  }, [goToPage, pageIndex]);
 
   const goToNextWeek = useCallback(() => {
-    setWeekStart((prev) => addDays(prev, 7));
-  }, []);
+    goToPage(pageIndex + 1);
+  }, [goToPage, pageIndex]);
 
   const goToToday = useCallback(() => {
-    setWeekStart(getWeekStart(new Date()));
+    setPageIndex(0);
+    setSelectedDateKey(toISODate(bookableDates[0]));
+  }, [bookableDates]);
+
+  const selectDate = useCallback((dateKey: string) => {
+    setSelectedDateKey(dateKey);
   }, []);
 
   const handleSave = useCallback(() => {
@@ -142,6 +151,8 @@ export function useAvailabilityGrid() {
     isDirty,
     weekDates,
     weekRangeLabel,
+    selectedDateKey,
+    selectDate,
     availabilityMap,
     timeSlots,
     canGoPrevWeek,

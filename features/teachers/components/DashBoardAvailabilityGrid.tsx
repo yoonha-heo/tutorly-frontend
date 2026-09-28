@@ -1,9 +1,10 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Lock } from "lucide-react";
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 
 import { useAvailabilityGrid } from "@/features/teachers/hooks/useAvailabilityGrid";
+import type { MyAvailability } from "@/features/teachers/types/teachers";
 import {
   getAvailabilityStatus,
   getDayAvailabilities,
@@ -12,8 +13,6 @@ import {
 } from "@/utils/availabilities";
 import { cn } from "@/utils/cn";
 import { formatAvailabilityTime } from "@/utils/localDateTime";
-
-const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const outlineButtonClass =
   "inline-flex h-10 items-center justify-center rounded-xl border border-border px-4 text-sm font-semibold text-foreground transition-colors hover:bg-secondary";
@@ -31,6 +30,8 @@ export function DashboardAvailabilityGrid() {
     isDirty,
     weekDates,
     weekRangeLabel,
+    selectedDateKey,
+    selectDate,
     availabilityMap,
     timeSlots,
     canGoPrevWeek,
@@ -155,7 +156,9 @@ export function DashboardAvailabilityGrid() {
           <div className="md:hidden">
             <MobileTimeline
               weekDates={weekDates}
+              selectedDateKey={selectedDateKey}
               availabilityMap={availabilityMap}
+              onSelectDate={selectDate}
               onToggle={handleToggle}
               onToggleDay={handleToggleDay}
             />
@@ -332,7 +335,7 @@ function DesktopGrid({
       <div className="min-w-[760px]">
         <div className="mb-2 grid grid-cols-[56px_repeat(7,1fr)] gap-2">
           <div />
-          {weekDates.map((date, index) => {
+          {weekDates.map((date) => {
             const dateKey = toISODate(date);
             const isToday = dateKey === todayKey;
 
@@ -347,7 +350,7 @@ function DesktopGrid({
                     isToday ? "text-primary" : "text-muted-foreground",
                   )}
                 >
-                  {DAY_LABELS[index]}
+                  {date.toLocaleDateString("en-US", { weekday: "short" })}
                 </span>
                 <span
                   className={cn(
@@ -409,42 +412,47 @@ function DesktopGrid({
 
 function MobileTimeline({
   weekDates,
+  selectedDateKey,
   availabilityMap,
+  onSelectDate,
   onToggle,
   onToggleDay,
 }: {
   weekDates: Date[];
+  selectedDateKey: string;
   availabilityMap: Map<string, MyAvailability>;
+  onSelectDate: (dateKey: string) => void;
   onToggle: (id: string) => void;
   onToggleDay: (dateKey: string, isOpen: boolean) => void;
 }) {
-  const [selectedIdx, setSelectedIdx] = useState(0);
-  const selectedDate = weekDates[selectedIdx];
-  const selectedDateKey = toISODate(selectedDate);
+  const selectedDate =
+    weekDates.find((date) => toISODate(date) === selectedDateKey) ??
+    weekDates[0];
+  const activeDateKey = toISODate(selectedDate);
   const todayKey = toISODate(new Date());
 
   const dayAvailabilities = useMemo(
     () =>
-      getDayAvailabilities(availabilityMap, selectedDateKey).sort(
+      getDayAvailabilities(availabilityMap, activeDateKey).sort(
         (a, b) =>
           new Date(a.startAt).getTime() - new Date(b.startAt).getTime(),
       ),
-    [availabilityMap, selectedDateKey],
+    [availabilityMap, activeDateKey],
   );
 
   return (
     <div className="flex flex-col gap-5">
       <div className="flex gap-2 overflow-x-auto pb-1">
-        {weekDates.map((date, index) => {
+        {weekDates.map((date) => {
           const dateKey = toISODate(date);
           const isToday = dateKey === todayKey;
-          const isSelected = index === selectedIdx;
+          const isSelected = dateKey === activeDateKey;
 
           return (
             <button
               key={dateKey}
               type="button"
-              onClick={() => setSelectedIdx(index)}
+              onClick={() => onSelectDate(dateKey)}
               className={cn(
                 "flex shrink-0 flex-col items-center rounded-2xl border px-3 py-2 text-xs font-semibold transition-colors",
                 isSelected
@@ -454,7 +462,9 @@ function MobileTimeline({
                     : "border-border bg-background text-foreground hover:bg-secondary",
               )}
             >
-              <span className="uppercase tracking-wide">{DAY_LABELS[index]}</span>
+              <span className="uppercase tracking-wide">
+                {date.toLocaleDateString("en-US", { weekday: "short" })}
+              </span>
               <span className="text-base font-semibold">{date.getDate()}</span>
             </button>
           );
@@ -470,7 +480,7 @@ function MobileTimeline({
           })}
         </p>
         <DayToggleButton
-          dateKey={selectedDateKey}
+          dateKey={activeDateKey}
           availabilityMap={availabilityMap}
           onToggleDay={onToggleDay}
           className={cn(
