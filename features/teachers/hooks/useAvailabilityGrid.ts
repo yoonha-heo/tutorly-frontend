@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useMyAvailabilities } from "@/features/teachers/hooks/useMyAvailabilities";
 import { useSaveAvailabilities } from "@/features/teachers/hooks/useSaveAvailabilities";
@@ -26,9 +26,12 @@ export function useAvailabilityGrid() {
     isError: isSaveError,
   } = useSaveAvailabilities();
 
-  const serverAvailabilities = data ?? [];
+  const serverAvailabilities = useMemo(() => data ?? [], [data]);
   const serverAvailabilitiesRef = useRef(serverAvailabilities);
-  serverAvailabilitiesRef.current = serverAvailabilities;
+
+  useEffect(() => {
+    serverAvailabilitiesRef.current = serverAvailabilities;
+  }, [serverAvailabilities]);
 
   const [draftAvailabilities, setDraftAvailabilities] = useState<
     MyAvailability[] | null

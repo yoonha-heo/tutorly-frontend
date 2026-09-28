@@ -289,7 +289,7 @@ export function TeacherRegistrationForm() {
       <div className="mt-10 border-t border-border pt-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-base text-muted-foreground">
-            We'll review your application within a few days.
+            We&apos;ll review your application within a few days.
           </p>
 
           <button

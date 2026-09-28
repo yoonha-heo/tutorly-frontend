@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import {
@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 
+import { useIsClient } from "@/hooks/useIsClient";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useChatList } from "@/features/chats/hooks/useChatList";
@@ -27,15 +28,13 @@ export default function Header() {
   const pathname = usePathname();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  const mounted = useIsClient();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setIsOpen(false);
-  }, [pathname]);
+  }
 
   const handleClose = () => setIsOpen(false);
 

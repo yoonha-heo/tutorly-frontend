@@ -3,6 +3,8 @@
 import { LoaderCircle, Star, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+
+import { useIsClient } from "@/hooks/useIsClient";
 import { createPortal } from "react-dom";
 
 import type { Booking } from "@/features/bookings/api/bookings.api";
@@ -28,23 +30,21 @@ export function ReviewModal({
   onClose,
   onSubmitted,
 }: ReviewModalProps) {
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsClient();
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [wasOpen, setWasOpen] = useState(isOpen);
   const createReviewMutation = useCreateReview();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    setRating(0);
-    setHoveredRating(0);
-    setComment("");
-  }, [isOpen]);
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen);
+    if (isOpen) {
+      setRating(0);
+      setHoveredRating(0);
+      setComment("");
+    }
+  }
 
   useEffect(() => {
     if (!isOpen) return;

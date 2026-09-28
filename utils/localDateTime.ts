@@ -202,7 +202,9 @@ export function chunkArray<T>(items: T[], size: number): T[][] {
   return chunks;
 }
 
-export function processTeacherAvailabilities(availabilities: any[]) {
+export function processTeacherAvailabilities<T extends { startAt: string }>(
+  availabilities: T[],
+) {
   const availabilitiesByDate = groupAvailabilitiesByDate(availabilities);
   const availableDates = Array.from(availabilitiesByDate.entries()).map(
     ([dateKey, dateAvailabilities]) => ({

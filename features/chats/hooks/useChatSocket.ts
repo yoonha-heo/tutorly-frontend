@@ -16,17 +16,23 @@ export function useChatSocket(
   const queryClient = useQueryClient();
   const channelsKey = [...channelIds].sort().join(",");
   const optionsRef = useRef(options);
-  optionsRef.current = options;
+  const channelIdsRef = useRef(channelIds);
 
   useEffect(() => {
-    if (!channelIds.length) return;
+    optionsRef.current = options;
+    channelIdsRef.current = channelIds;
+  });
+
+  useEffect(() => {
+    const ids = channelIdsRef.current;
+    if (!ids.length) return;
 
     const socket = io(`${env.socketUrl}/chat`, {
       transports: ["websocket"],
     });
 
     function joinRooms() {
-      for (const channelId of channelIds) {
+      for (const channelId of ids) {
         socket.emit("join_room", { channelId });
       }
     }

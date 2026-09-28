@@ -2,6 +2,8 @@
 
 import { AlertCircle, LoaderCircle, Star, X } from "lucide-react";
 import { useEffect, useState } from "react";
+
+import { useIsClient } from "@/hooks/useIsClient";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -22,12 +24,13 @@ interface BookingModalProps {
 
 export function BookingModal({ teacher, isOpen, onClose }: BookingModalProps) {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsClient();
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [selectedDateKey, setSelectedDateKey] = useState("");
   const [selectedAvailabilityId, setSelectedAvailabilityId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [wasOpen, setWasOpen] = useState(isOpen);
 
   const {
     data: availabilities = [],
@@ -38,17 +41,19 @@ export function BookingModal({ teacher, isOpen, onClose }: BookingModalProps) {
 
   const createBookingMutation = useCreateBooking({ teacherId: teacher.id });
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen);
+    if (isOpen) {
+      setCurrentWeekIndex(0);
+      setSelectedDateKey("");
+      setSelectedAvailabilityId("");
+      setIsSubmitting(false);
+      setErrorMessage("");
+    }
+  }
 
   useEffect(() => {
     if (!isOpen) return;
-    setCurrentWeekIndex(0);
-    setSelectedDateKey("");
-    setSelectedAvailabilityId("");
-    setIsSubmitting(false);
-    setErrorMessage("");
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";

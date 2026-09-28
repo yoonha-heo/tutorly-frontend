@@ -3,6 +3,8 @@
 import { Check, LoaderCircle, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+
+import { useIsClient } from "@/hooks/useIsClient";
 import { createPortal } from "react-dom";
 
 import { useSendChat } from "@/features/chats/hooks/useSendChat";
@@ -16,21 +18,20 @@ interface MessageModalProps {
 
 export function MessageModal({ teacher, isOpen, onClose }: MessageModalProps) {
   const firstName = teacher.user.name.split(" ")[0];
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsClient();
   const [message, setMessage] = useState(`Hi ${firstName}!\n\n`);
   const [isSent, setIsSent] = useState(false);
+  const openKey = isOpen ? firstName : "";
+  const [prevOpenKey, setPrevOpenKey] = useState(openKey);
   const sendChat = useSendChat();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    setMessage(`Hi ${firstName}!\n\n`);
-    setIsSent(false);
-  }, [firstName, isOpen]);
+  if (openKey !== prevOpenKey) {
+    setPrevOpenKey(openKey);
+    if (isOpen) {
+      setMessage(`Hi ${firstName}!\n\n`);
+      setIsSent(false);
+    }
+  }
 
   useEffect(() => {
     if (!isOpen) return;

@@ -5,8 +5,13 @@ import {
   formatWeekRange,
 } from "@/utils/localDateTime";
 
+interface WeekDate {
+  dateKey: string;
+  startAt: string;
+}
+
 interface DateSelectorProps {
-  currentWeek: any[];
+  currentWeek: WeekDate[];
   currentWeekIndex: number;
   totalWeeks: number;
   activeDateKey: string;

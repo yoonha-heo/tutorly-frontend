@@ -32,7 +32,7 @@ export function useChatMessages(
     if (seenMessageIdRef.current === lastMessageId) return;
     seenMessageIdRef.current = lastMessageId;
     markAsRead.mutate(channelId);
-  }, [channelId, lastMessageId, options.isListOpen]);
+  }, [channelId, lastMessageId, markAsRead, options.isListOpen]);
 
   return {
     messages,

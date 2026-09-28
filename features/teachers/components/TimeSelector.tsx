@@ -1,4 +1,6 @@
 import { Clock3, Moon, Sun, Sunrise, Sunset } from "lucide-react";
+
+import type { TeacherAvailability } from "@/features/teachers/types/teachers";
 import {
   filterAvailabilitiesByHour,
   formatAvailabilityTime,
@@ -6,7 +8,7 @@ import {
 } from "@/utils/localDateTime";
 
 interface TimeSelectorProps {
-  availableTimes: any[];
+  availableTimes: TeacherAvailability[];
   selectedAvailabilityId: string;
   onSelectTime: (id: string) => void;
 }

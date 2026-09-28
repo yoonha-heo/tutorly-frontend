@@ -2,7 +2,7 @@ export interface ApiErrorResponse {
     statusCode: number;
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
     traceId?: string;
     timestamp?: string;
     path?: string;
@@ -11,7 +11,7 @@ export interface ApiErrorResponse {
 export class ApiError extends Error {
     readonly statusCode: number;
     readonly code: string;
-    readonly details?: any;
+    readonly details?: unknown;
     readonly traceId?: string;
     readonly timestamp?: string;
     readonly path?: string;

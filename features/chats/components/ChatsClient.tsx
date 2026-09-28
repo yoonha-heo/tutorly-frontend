@@ -25,6 +25,15 @@ export function ChatsClient() {
   const items = data?.items ?? [];
   const [selectedId, setSelectedId] = useState("");
   const [isListOpen, setIsListOpen] = useState(true);
+  const [appliedPendingNonce, setAppliedPendingNonce] = useState<number | null>(
+    null,
+  );
+
+  if (pendingChatOpen && pendingChatOpen.nonce !== appliedPendingNonce) {
+    setAppliedPendingNonce(pendingChatOpen.nonce);
+    setSelectedId(pendingChatOpen.channelId);
+    setIsListOpen(false);
+  }
 
   const selected = items.find((item) => item.id === selectedId) ?? items[0];
 
@@ -36,8 +45,6 @@ export function ChatsClient() {
   useEffect(() => {
     if (!pendingChatOpen) return;
 
-    setSelectedId(pendingChatOpen.channelId);
-    setIsListOpen(false);
     markAsRead.mutate(pendingChatOpen.channelId);
     clearPendingChatOpen();
   }, [pendingChatOpen, markAsRead, clearPendingChatOpen]);

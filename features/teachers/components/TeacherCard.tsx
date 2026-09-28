@@ -29,7 +29,7 @@ export function TeacherCard({ teacher, priority }: TeacherCardProps) {
 
             <p className="mt-1 text-sm text-muted-foreground">
               {teacher.teacherLanguages
-                .map((item: any) => item.language.name)
+                .map((item) => item.language.name)
                 .join(", ")}
             </p>
 
@@ -57,7 +57,7 @@ export function TeacherCard({ teacher, priority }: TeacherCardProps) {
       </p>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        {teacher.teacherSpecialties.map((item: any) => (
+        {teacher.teacherSpecialties.map((item) => (
           <span
             key={item.specialty.id}
             className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
