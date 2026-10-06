@@ -6,6 +6,7 @@ import { io } from "socket.io-client";
 
 import { env } from "@/config/env";
 import { appendIncomingMessage } from "../lib/appendIncomingMessage";
+import { formatSystemMessage } from "../lib/formatSystemMessage";
 import { notifyIncomingChat } from "../lib/notifyIncomingChat";
 import type { ChatMessage } from "../api/chats.api";
 
@@ -53,7 +54,10 @@ export function useChatSocket(
             ? "Tutorly"
             : (message.sender?.name ?? "Someone"),
         senderImage: message.sender?.profileImage ?? null,
-        preview: message.content,
+        preview:
+          message.type === "SYSTEM"
+            ? formatSystemMessage(message.content)
+            : message.content,
       });
     }
 

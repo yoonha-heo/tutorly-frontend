@@ -3,6 +3,7 @@ import { Bell } from "lucide-react";
 
 import { cn } from "@/utils/cn";
 import type { ChatMessage } from "../api/chats.api";
+import { formatSystemMessage } from "../lib/formatSystemMessage";
 
 export function MessageList({
   scrollerRef,
@@ -55,7 +56,7 @@ function MessageBubble({
           className="mt-0.5 size-3.5 shrink-0 text-primary"
           aria-hidden="true"
         />
-        <span>{message.content}</span>
+        <span>{formatSystemMessage(message.content)}</span>
       </div>
     );
   }

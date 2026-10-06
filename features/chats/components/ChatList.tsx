@@ -3,6 +3,7 @@
 import { ChatAvatar } from "./ChatAvatar";
 import { cn } from "@/utils/cn";
 import type { ChatListItem } from "../api/chats.api";
+import { formatSystemMessage } from "../lib/formatSystemMessage";
 
 const EMPTY_PROFILE = "/images/empty-profile.png";
 
@@ -93,7 +94,11 @@ function ConversationItem({
             hasUnread ? "font-medium text-foreground" : "text-muted-foreground",
           )}
         >
-          {item.lastMessage?.content ?? "No messages yet"}
+          {item.lastMessage
+            ? item.lastMessage.type === "SYSTEM"
+              ? formatSystemMessage(item.lastMessage.content)
+              : item.lastMessage.content
+            : "No messages yet"}
         </span>
       </span>
       <span className="flex shrink-0 items-center gap-4">
