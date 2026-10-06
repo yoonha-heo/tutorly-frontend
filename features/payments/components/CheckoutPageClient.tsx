@@ -6,10 +6,10 @@ import { useMyBookings } from "@/features/bookings/hooks/useMyBookings";
 import { CheckoutClient } from "./CheckoutClient";
 
 export function CheckoutPageClient({ bookingId }: { bookingId: string }) {
-  const { data: bookings, isPending, isError } = useMyBookings();
+  const { data: bookings, isPending, isFetching, isError } = useMyBookings();
   const booking = bookings?.find((item) => item.id === bookingId);
 
-  if (isPending) {
+  if (isPending || (!booking && isFetching)) {
     return <CheckoutSkeleton />;
   }
 

@@ -13,9 +13,12 @@ export function useCreateBooking({ teacherId }: UseCreateBookingOptions) {
     mutationFn: (request: CreateBookingData) => createBooking(request),
 
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["teacher-availabilities", teacherId],
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["teacher-availabilities", teacherId],
+        }),
+        queryClient.invalidateQueries({ queryKey: ["my-bookings"] }),
+      ]);
     },
   });
 }
