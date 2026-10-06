@@ -43,6 +43,10 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --secondary: #1c1c24;
+    --secondary-foreground: #ededed;
+    --muted-foreground: #a1a1aa;
+    --border: #2e2e33;
   }
 }
 
