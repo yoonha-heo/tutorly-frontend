@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { loginWithGoogle } from "@/features/auth/api/authApi";
+import { useGoogleButtonWidth } from "@/features/auth/hooks/useGoogleButtonWidth";
 import { getLoginRedirectPath } from "@/features/auth/lib/getLoginRedirectPath";
 import type { Me, SignupRole } from "@/features/auth/types/auth.types";
 import { ROLE_OPTIONS, RoleOption } from "./RoleOption";
@@ -22,6 +23,7 @@ export default function AuthForm({ initialRole }: AuthFormProps) {
   const [role, setRole] = useState<SignupRole>(initialRole);
   const [idToken, setIdToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { containerRef, width: googleButtonWidth } = useGoogleButtonWidth();
 
   function completeLogin(user: Me, isNewAccount = false) {
     queryClient.setQueryData(["me"], user);
@@ -75,7 +77,7 @@ export default function AuthForm({ initialRole }: AuthFormProps) {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6">
-      <section className="w-full max-w-md rounded-3xl border border-border bg-background p-10">
+      <section className="w-full max-w-md rounded-3xl border border-border bg-background p-6 sm:p-10">
         <Link href="/" className="flex items-center gap-3">
           <div className="flex size-11 items-center justify-center rounded-xl bg-primary">
             <GraduationCap className="size-5 text-primary-foreground" />
@@ -120,20 +122,22 @@ export default function AuthForm({ initialRole }: AuthFormProps) {
             </button>
           </>
         ) : (
-          <div className="mt-10 flex justify-center">
-            <GoogleLogin
-              theme="outline"
-              size="large"
-              shape="rectangular"
-              text="continue_with"
-              width="360"
-              onSuccess={({ credential }) => {
-                handleGoogleLoginSuccess(credential);
-              }}
-              onError={() => {
-                console.error("Google login failed");
-              }}
-            />
+          <div ref={containerRef} className="mt-10 w-full">
+            {googleButtonWidth > 0 && (
+              <GoogleLogin
+                theme="outline"
+                size="large"
+                shape="rectangular"
+                text="continue_with"
+                width={googleButtonWidth}
+                onSuccess={({ credential }) => {
+                  handleGoogleLoginSuccess(credential);
+                }}
+                onError={() => {
+                  console.error("Google login failed");
+                }}
+              />
+            )}
           </div>
         )}
       </section>
