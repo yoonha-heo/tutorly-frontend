@@ -82,7 +82,11 @@ test("sends visitors who cannot register away from the form", async () => {
       destination: "/teachers",
     },
     {
-      user: buildMe("TEACHER", { id: "profile-1", status: "APPROVED" }),
+      user: buildMe("TEACHER", {
+        id: "profile-1",
+        status: "APPROVED",
+        profileImageUrl: null,
+      }),
       destination: "/teachers/dashboard",
     },
   ];

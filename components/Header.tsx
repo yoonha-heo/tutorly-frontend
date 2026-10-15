@@ -37,6 +37,8 @@ export default function Header() {
   }
 
   const handleClose = () => setIsOpen(false);
+  const headerProfileImage =
+    me?.teacherProfile?.profileImageUrl || me?.profileImage || null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-md">
@@ -91,7 +93,7 @@ export default function Header() {
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="flex items-center gap-2 rounded-xl p-1.5 transition-colors hover:bg-secondary"
               >
-                <UserAvatar name={me.name} profileImage={me.profileImage} />
+                <UserAvatar name={me.name} profileImage={headerProfileImage} />
                 <span className="hidden max-w-32 truncate text-sm font-medium text-foreground sm:block">
                   {me.name}
                 </span>
@@ -107,7 +109,7 @@ export default function Header() {
                 <div className="absolute right-0 top-full mt-3 hidden w-72 overflow-hidden rounded-2xl border border-border bg-background p-4 shadow-xl md:block">
                   <ProfileHeader
                     name={me.name}
-                    profileImage={me.profileImage}
+                    profileImage={headerProfileImage}
                   />
                   <div className="my-4 border-t border-border" />
                   <NavLinks
@@ -140,7 +142,7 @@ export default function Header() {
                       <div className="flex items-center justify-between">
                         <ProfileHeader
                           name={me.name}
-                          profileImage={me.profileImage}
+                          profileImage={headerProfileImage}
                         />
                         <button
                           type="button"

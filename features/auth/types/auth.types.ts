@@ -7,6 +7,7 @@ export type TeacherStatus = "PENDING" | "APPROVED" | "REJECTED";
 export type TeacherProfileSummary = {
   id: string;
   status: "PENDING" | "APPROVED" | "REJECTED";
+  profileImageUrl: string | null;
 };
 
 export type Me = {
